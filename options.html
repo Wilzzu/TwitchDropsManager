@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitch Drops Manager</title>
+    <script src="drop.js"></script>
+    <script src="options.js"></script>
+</head>
+
+<body>
+    <form>
+        <h1>Twitch Drops Manager</h1>
+
+        <h2>Hide in channel(s): <input type="text" id="hideChannels" placeholder="xqcow, sodapoppin"></h2>
+
+        <h2>Refresh every <input type="range" id="rangeRefresh" min="1" max="60" value="1">
+            <input type="number" id="numberRefresh" min="1" max="60" value="1">
+            <span id="minuteAmount">minute</span>
+        </h2>
+
+        <h2>Show only the drops available on current channel <input type="checkbox" id="specificDrops"></h2> <!-- Doesn't show all drops, Shows only the drops available for current channel -->
+        
+        <h2>Show time left in:
+        <select id="showTime" name="time">
+            <option value="onlyPercent">Percentage</option>
+            <option value="onlyTime">Hours/Minutes</option>
+            <option value="bothTime">Both</option>
+          </select>
+        </h2>
+
+        <h2>Hide buttons <input type="checkbox" id="hideButtons"></h2>
+        
+        <h2>Disable Twitch Drop Manager <input type="checkbox" id="disableTDM"></h2>
+
+        <input type="submit" id="saveSettings" value="Save Settings">
+        <input type="reset" id="resetSettings" value="Reset to default settings">
+    </form>
+</body>
+
+</html>

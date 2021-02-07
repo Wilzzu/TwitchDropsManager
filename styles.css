@@ -1,0 +1,36 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	background-color: #f4f4f4;
+	flex-direction: column;
+	font-family: 'Montserrat', sans-serif;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	margin: 0;
+}
+
+.progress {
+	background-color: #fff3;
+	border-radius: 20px;
+	position: relative;
+	margin-right: 10px;
+	height: 15px;
+	width: 150px;
+}
+
+.progress-done {
+	background: linear-gradient(to left, #c26df3,#9147ff);
+	border-radius: 20px;
+	color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	width: 0;
+	opacity: 0;
+	transition: 1s ease 0.3s;
+}
