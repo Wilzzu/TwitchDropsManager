@@ -1,81 +1,55 @@
 (function () {
+    
+    function reloadIframe() { //Päivitetää minuuti välein
+        ifrm.style.visibility = "hidden"
+        ifrm.contentWindow.location.reload();
+        checkIframeDrops();
+    }
 
-    function createIframe() {
-        var up0 = ifrm.contentWindow.document.querySelector("div.tw-flex.tw-flex-column.tw-flex-nowrap.tw-full-height > nav")
-        up0.style.display = "none";
-        var up1 = ifrm.contentWindow.document.querySelector("#twilight-sticky-header-root > div");
-        up1.style.marginTop = "-30px";
-        var up2 = ifrm.contentWindow.document.querySelector("div.tw-flex-grow-1.tw-mg-b-2");
-        up2.style.display = "none";
-        var up3 = ifrm.contentWindow.document.querySelector("div.inventory-max-width > div:nth-child(1)");
-        up3.style.display = "none";
-        var down0 = ifrm.contentWindow.document.querySelector("div.root-scrollable.scrollable-area > div.simplebar-scroll-content > div > div > div > div > div > div > div:nth-child(3)")
-        down0.style.display = "none";
-        var sidenav = ifrm.contentWindow.document.getElementById("sideNav");
-        sidenav.style.display = "none";
-        var titleDrops = ifrm.contentWindow.document.querySelector("div.title-bar.tw-flex.tw-pd-b-1 > div");
-        titleDrops.style.display = "none";
-        var scroll1 = ifrm.contentWindow.document.querySelector("div.root-scrollable.scrollable-area > div.simplebar-track.vertical")
-        //scroll1.style.display = "none";
-        var dropsBody = ifrm.contentWindow.document.getElementsByTagName("BODY")[0];
-        //dropsBody.style.visibility = "hidden";
-        var containerit = ifrm.contentWindow.document.querySelector("div.inventory-max-width")
-        containerit.style.display = "none"
-        var header = ifrm.contentWindow.document.querySelector("#twilight-sticky-header-root")
-        header.style.display = "none"
-        var marginEdit = ifrm.contentWindow.document.querySelector("div.root-scrollable.scrollable-area > div.simplebar-scroll-content > div > div > div > div")
-        marginEdit.style.marginTop = "-30px"
-        var scrollableContainer = ifrm.contentWindow.document.querySelector("div.root-scrollable.scrollable-area > div.simplebar-scroll-content > div > div > div > div > div > div")
-        scrollableContainer.style.visibility = "visible"
-        var availableDropsContainers = ifrm.contentWindow.document.getElementsByClassName("tw-border-radius-medium tw-c-background-base tw-elevation-1 tw-flex tw-flex-grow-0 tw-flex-row tw-mg-b-2")
-
-        for (j = 0; j < availableDropsContainers.length; j++){
-            console.log("Container count: " + j)
+    function takeDrops() {
+        for (j = 0; j < availableDropsContainers.length; j++) {
 
             let availableDrops = availableDropsContainers[j].getElementsByClassName("tw-flex tw-flex-column tw-mg-t-2")
 
-            for (i = 0; i < availableDrops.length; i++){    //Chekkaa monta containerii on ja käy jokase läpi
+            for (i = 0; i < availableDrops.length; i++) { //Chekkaa monta containerii on ja käy jokase läpi
 
-                if(availableDrops[i].getElementsByClassName("tw-visible").length > 0){ //Monta droppia on containeri sisäl
-                    console.log("Drop nr." + i)
-                    availableDrops[i].style.margin = "0"            //Muokataan dropin ulkonäköä          
+                if (availableDrops[i].getElementsByClassName("tw-visible").length > 0) { //Monta droppia on containeri sisäl
+                    availableDrops[i].style.margin = "0" //Muokataan dropin ulkonäköä          
                     availableDrops[i].style.marginRight = "15px"
                     availableDrops[i].style.height = "240px"
                     availableDrops[i].style.width = "160px" //160px
-                    let link = availableDropsContainers[j].querySelector("div.tw-mg-x-1 > div > p > a")     //ottaa linkin divin tiedot
+                    let link = availableDropsContainers[j].querySelector("div.tw-mg-x-1 > div > p > a") //ottaa linkin divin tiedot
                     link.style.textAlign = "center";
-                    let dropName = availableDrops[i].getElementsByClassName("tw-font-size-5 tw-semibold")[0]    //Otetaa dropName tekstin tiedot
-                    link.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color")    //Vaihetaan linkin väri dropNamen väriseks
+                    let dropName = availableDrops[i].getElementsByClassName("tw-font-size-5 tw-semibold")[0] //Otetaa dropName tekstin tiedot
+                    link.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color") //Vaihetaan linkin väri dropNamen väriseks
                     link.style.paddingBottom = "5px"
 
-                    let gameURL = link.href.split('game/').pop().split('?')[0]     //Otetaa pelin linkki jos ei oo striimeri
+                    let gameURL = link.href.split('game/').pop().split('?')[0] //Otetaa pelin linkki jos ei oo striimeri
 
-                    for(k = 0; k < gameURL.split('%20').length+1; k++){            //Muutetaan %20 spaceks
-                        gameURL = gameURL.replace('%20',' ')
+                    for (k = 0; k < gameURL.split('%20').length + 1; k++) { //Muutetaan %20 spaceks
+                        gameURL = gameURL.replace('%20', ' ')
                     }
-                    for(k = 0; k < gameURL.split('%3A').length+1; k++){            //Muutetaan %3A kaksoispisteeks
-                        gameURL = gameURL.replace('%3A',':')
+                    for (k = 0; k < gameURL.split('%3A').length + 1; k++) { //Muutetaan %3A kaksoispisteeks
+                        gameURL = gameURL.replace('%3A', ':')
                     }
-                    for(k = 0; k < gameURL.split('%26').length+1; k++){            //Muutetaan %26 andiks
-                        gameURL = gameURL.replace('%26','&')
+                    for (k = 0; k < gameURL.split('%26').length + 1; k++) { //Muutetaan %26 andiks
+                        gameURL = gameURL.replace('%26', '&')
                     }
 
-                    if(link.innerHTML == "a participating live channel"){
-                        if(gameURL.length > 0){ 
-                            link.innerHTML = gameURL                               //Muutetaa teksti pelin nimeks
-                        }
-                        else{
-                            link.innerHTML = "‎"                                //Jos ei löytyny linkkiä jätetää teksti tyhjäks
+                    if (link.innerHTML == "a participating live channel") {
+                        if (gameURL.length > 0) {
+                            link.innerHTML = gameURL //Muutetaa teksti pelin nimeks
+                        } else {
+                            link.innerHTML = "‎" //Jos ei löytyny linkkiä jätetää teksti tyhjäks
                         }
                     }
-                    availableDrops[i].prepend(link)                            //Lisätää linkki dropin yläpuolelle
+                    availableDrops[i].prepend(link) //Lisätää linkki dropin yläpuolelle
                     availableDrops[i].style.cssFloat = "left"
-                    scrollableContainer.appendChild(availableDrops[i])                      //Lisätää koko juttu headerii
-                }
-
-                else{   //Sama mutta jos on "Claim now" button
-                    if(availableDrops[i].getElementsByClassName("tw-align-items-center tw-core-button-icon tw-inline-flex").length > 0){
-                        console.log("Claim nr." + i)
+                    scrollableContainer.appendChild(availableDrops[i]) //Lisätää koko juttu headerii
+                } 
+                
+                else { //Sama mutta jos on "Claim now" button
+                    if (availableDrops[i].getElementsByClassName("tw-align-items-center tw-core-button-icon tw-inline-flex").length > 0) {
                         availableDrops[i].style.margin = "0"
                         availableDrops[i].style.marginRight = "15px"
                         availableDrops[i].style.height = "240px"
@@ -83,73 +57,156 @@
                         let link = availableDropsContainers[j].querySelector("div.tw-mg-x-1 > div > p > a")
                         link.style.textAlign = "center";
                         let dropName = availableDrops[i].getElementsByClassName("tw-font-size-5 tw-semibold")[0]
-                        link.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color") 
+                        link.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color")
                         link.style.paddingBottom = "5px"
 
                         let gameURL = link.href.split('game/').pop().split('?')[0]
 
-                        for(k = 0; k < gameURL.split('%20').length+1; k++){
-                            gameURL = gameURL.replace('%20',' ')
+                        for (k = 0; k < gameURL.split('%20').length + 1; k++) {
+                            gameURL = gameURL.replace('%20', ' ')
                         }
-                        for(k = 0; k < gameURL.split('%3A').length+1; k++){
-                            gameURL = gameURL.replace('%3A',':')
+                        for (k = 0; k < gameURL.split('%3A').length + 1; k++) {
+                            gameURL = gameURL.replace('%3A', ':')
                         }
-                        for(k = 0; k < gameURL.split('%26').length+1; k++){
-                            gameURL = gameURL.replace('%26','and')
+                        for (k = 0; k < gameURL.split('%26').length + 1; k++) {
+                            gameURL = gameURL.replace('%26', 'and')
                         }
 
-                    if(link.innerHTML == "a participating live channel"){
-                        if(gameURL.length > 0){
-                            link.innerHTML = gameURL
+                        if (link.innerHTML == "a participating live channel") {
+                            if (gameURL.length > 0) {
+                                link.innerHTML = gameURL
+                            } else {
+                                link.innerHTML = "‎"
+                            }
                         }
-                        else{
-                            link.innerHTML = "‎"
-                        }
-                    }
                         availableDrops[i].prepend(link)
                         availableDrops[i].style.cssFloat = "left"
                         scrollableContainer.prepend(availableDrops[i])
                     }
                 }
             }
-    }
-
+        }
         ifrm.style.visibility = "visible" //Kun kaikki on poistettu (ja dropit lisätty) laitetaa iframe näkyvii
         setTimeout(reloadIframe, 60000); //Reload funktio minuuti välein
     }
 
-    function reloadIframe() { //Päivitetää minuuti välein
-        ifrm.style.visibility = "hidden"
-        ifrm.contentWindow.location.reload();
-        checkIframeDrops();
+    function createIframe() {
+        let removeElements = setInterval(function () {
+            up0 = ifrm.contentWindow.document.querySelector("div.tw-flex.tw-flex-column.tw-flex-nowrap.tw-full-height > nav")
+            up1 = ifrm.contentWindow.document.querySelector("#twilight-sticky-header-root > div");
+            up2 = ifrm.contentWindow.document.querySelector("div.tw-flex-grow-1.tw-mg-b-2");
+            up3 = ifrm.contentWindow.document.querySelector("div.inventory-max-width > div:nth-child(1)");
+            down0 = ifrm.contentWindow.document.querySelector("div.root-scrollable.scrollable-area > div.simplebar-scroll-content > div > div > div > div > div > div > div:nth-child(3)")
+            sidenav = ifrm.contentWindow.document.getElementById("sideNav");
+            titleDrops = ifrm.contentWindow.document.querySelector("div.title-bar.tw-flex.tw-pd-b-1 > div");
+            scroll1 = ifrm.contentWindow.document.querySelector("div.root-scrollable.scrollable-area > div.simplebar-track.vertical")
+            dropsBody = ifrm.contentWindow.document.getElementsByTagName("BODY")[0];
+            containerit = ifrm.contentWindow.document.querySelector("div.inventory-max-width")
+            header = ifrm.contentWindow.document.querySelector("#twilight-sticky-header-root")
+            marginEdit = ifrm.contentWindow.document.querySelector("div.root-scrollable.scrollable-area > div.simplebar-scroll-content > div > div > div > div")
+            scrollableContainer = ifrm.contentWindow.document.querySelector("div.root-scrollable.scrollable-area > div.simplebar-scroll-content > div > div > div > div > div > div")
+            availableDropsContainers = ifrm.contentWindow.document.getElementsByClassName("tw-border-radius-medium tw-c-background-base tw-elevation-1 tw-flex tw-flex-grow-0 tw-flex-row tw-mg-b-2")
+
+            if (up0 != null && up1 != null && up2 != null && up3 != null && down0 != null && sidenav != null && titleDrops != null && dropsBody != null && header != null) {
+                console.log("up0 ei oo null")
+                up0.style.display = "none";
+                up1.style.marginTop = "-30px";
+                up2.style.display = "none";
+                up3.style.display = "none";
+                down0.style.display = "none";
+                sidenav.style.display = "none";
+                titleDrops.style.display = "none";
+                //scroll1.style.display = "none";
+                //dropsBody.style.visibility = "hidden";
+                containerit.style.display = "none"
+                header.style.display = "none"
+                marginEdit.style.marginTop = "-30px"
+                scrollableContainer.style.visibility = "visible"
+                takeDrops()
+                clearInterval(removeElements)
+            } else {
+                console.log("up0 on null")
+            }
+        }, 500);
     }
 
     function checkIframeDrops() {
         iframeCreate = setInterval(function () {
             if (ifrm.contentWindow.document.getElementsByClassName("tw-border-radius-medium tw-c-background-base tw-elevation-1 tw-flex tw-flex-grow-0 tw-flex-row tw-mg-b-2")[0]) { //Jos dropit löytyy iframesta
-                if (ifrm.contentWindow.document.querySelector("div.inventory-max-width > div:nth-child(1)")){   //Kattoo löytyykö "In Progress" teksti
-                createIframe(); //Tehdään iframe näyttökelposeks    
-                clearInterval(iframeCreate); //Lopetetaa toisto
+                if (ifrm.contentWindow.document.querySelector("div.inventory-max-width > div:nth-child(1)")) { //Kattoo löytyykö "In Progress" teksti
+                    createIframe(); //Tehdään iframe näyttökelposeks    
+                    clearInterval(iframeCreate); //Lopetetaa toisto
                 }
             }
         }, 100);
 
     }
 
-    //Luodaa iframe
+    function insertIframe() {
+        let insertIframe = setInterval(function () {
+            if (document.querySelector("div.channel-root__info > div > div:nth-child(2)") && document.querySelector("div.tw-absolute.tw-align-items-center.tw-flex.tw-full-width.tw-justify-content-center.user-avatar-animated__live")) { //katotaa löytyykö about osa sivulta ja onko se live
+                document.querySelector("div.channel-root__info > div > div:nth-child(2)").prepend(ifrm) //Lisätää iframe about osan yläpuolelle
+                checkIframeDrops(); //Katotaa löytyykö droppeja iframesta
+                clearInterval(insertIframe); //Lopetetaa toisto
+            }
+        }, 1000);
+    }
+
+    //Luodaan iframe
     var ifrm = document.createElement('iframe');
     ifrm.setAttribute('src', 'https://www.twitch.tv/drops/inventory');
     ifrm.width = "100%"
     ifrm.height = "250px" //1 row 250px, 2 row 530px, 3 row 810px
     ifrm.style.visibility = "hidden" //Piilota iframe
-        
-    let insertIframe = setInterval(function () {
-        if (document.querySelector("div.channel-root__info > div > div:nth-child(2)") && document.querySelector("div.tw-absolute.tw-align-items-center.tw-flex.tw-full-width.tw-justify-content-center.user-avatar-animated__live")) { //katotaa löytyykö about osa sivulta ja onko se live
-            document.querySelector("div.channel-root__info > div > div:nth-child(2)").prepend(ifrm) //Lisätää iframe about osan yläpuolelle
-            checkIframeDrops(); //Katotaa löytyykö droppeja iframesta
-            clearInterval(insertIframe); //Lopetetaa toisto
+
+    //Listataan kaikki iframen elementit mitä tullaan käyttää
+    var up0 = ""
+    var up1 = ""
+    var up2 = ""
+    var up3 = ""
+    var down0 = ""
+    var sidenav = ""
+    var titleDrops = ""
+    var scroll1 = ""
+    var dropsBody = ""
+    var containerit = ""
+    var header = ""
+    var marginEdit = ""
+    var scrollableContainer = ""
+    var availableDropsContainers = ""
+
+    insertIframe() //Lisätää iframe aboutin yläpuolelle näkymättömänä
+
+    let currentStream = ""
+    let oldStream = undefined
+
+
+    //Chekataa 2 sec välein vaihtuuko striimin nimi
+    setInterval(() => {
+        let streamNameDiv = document.querySelector("div.tw-align-items-center.tw-flex > a") //Striimin nimi div
+        if (streamNameDiv != null) {    //Katotaa löytyykö divi
+            if (streamNameDiv.innerText.length > 0) {   //Jos löytyy katotaan onko siinä tekstiä
+                currentStream = streamNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
+                if (oldStream == undefined) {  //Jos ei oo vielä oldStream
+                    oldStream = currentStream   //Lisätää nykyne striimi oldStreamii
+                    console.log("laitettii uus striimi vanhaks")
+                }
+                if (currentStream == oldStream) {   //Jos nykyne striimi sama kun vanha
+                    console.log("Sama striimi")
+                } else {
+                    oldStream = currentStream   //Jos on uus striimi, nii lisätään sen nimi oldStreamii
+                    ifrm.style.visibility = "hidden" //Piilotetaa iframe
+                    insertIframe() //Lisätää iframe uudestaa
+                    console.log("Uus striimi")
+                }
+            }
+        } else {    //Ei löydy nimi diviä
+            console.log("No stream found")
         }
-    }, 1000);
+    }, 2000);
+
+
+
 
 
     //Päivitä iframe 10 seka välei
