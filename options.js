@@ -1,9 +1,11 @@
 function save_options() {
-    var color = document.getElementById('color').value;
-    var likesColor = document.getElementById('like').checked;
+    var getRefreshNumber = document.getElementById('numberRefresh').value;
+    var getRefreshRange = document.getElementById('rangeRefresh').value;
+    var getDisableTDM = document.getElementById('disableTDM').checked;
     chrome.storage.sync.set({
-        favoriteColor: color,
-        likesColor: likesColor
+        refreshTime: getRefreshNumber,
+        refreshRange: getRefreshRange,
+        disableTDM: getDisableTDM
     }, function () {
         // Update status to let user know options were saved.
         var status = document.getElementById('status');
@@ -14,15 +16,27 @@ function save_options() {
     });
 }
 
+function restore_options() {
+    chrome.storage.sync.get({
+        refreshTime: 1,
+        refreshRange: 1,
+        disableTDM: false
+      }, function(items) {
+        document.getElementById('numberRefresh').value = items.refreshTime;
+        document.getElementById('rangeRefresh').value = items.refreshRange;
+        document.getElementById('disableTDM').checked = items.disableTDM;
+        updateMinutes()
+      });
+    }
 
-
-refreshValue = 1
+let refreshValue = undefined
 
 window.addEventListener('load', function () {
+    restore_options()
     document.getElementById('rangeRefresh').addEventListener("input", updateNumberRefresh);
     document.getElementById('numberRefresh').addEventListener("input", updateRangeRefresh);
-    document.getElementById('resetSettings').addEventListener("click", resetButton);
-    console.log(rangeRefresh.value)
+    document.getElementById('resetSettings').addEventListener("click", restore_options);
+    document.getElementById('saveSettings').addEventListener('click', save_options);
 })
 
 

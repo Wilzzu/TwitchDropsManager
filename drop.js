@@ -1,5 +1,28 @@
 (function () {
-    
+
+    //Asetukset variablet
+    var refreshTime
+    var disableTDM
+
+    //Haetaan asetukset
+    chrome.storage.sync.get({
+        refreshTime: 1,
+        refreshRange: 1,
+        disableTDM: false
+    }, function (items) {
+        refreshTime = items.refreshTime;
+        disableTDM = items.disableTDM;
+    });
+
+    //
+    let getOptions = setInterval(function () {
+        if (refreshTime != undefined) { //katotaa onko asetukset ladannu
+            console.log(refreshTime)
+            console.log(disableTDM)
+            clearInterval(getOptions); //Lopetetaa toisto
+        }
+    }, 1000);
+
     function reloadIframe() { //Päivitetää minuuti välein
         ifrm.style.visibility = "hidden"
         ifrm.contentWindow.location.reload();
@@ -46,9 +69,7 @@
                     availableDrops[i].prepend(link) //Lisätää linkki dropin yläpuolelle
                     availableDrops[i].style.cssFloat = "left"
                     scrollableContainer.appendChild(availableDrops[i]) //Lisätää koko juttu headerii
-                } 
-                
-                else { //Sama mutta jos on "Claim now" button
+                } else { //Sama mutta jos on "Claim now" button
                     if (availableDrops[i].getElementsByClassName("tw-align-items-center tw-core-button-icon tw-inline-flex").length > 0) {
                         availableDrops[i].style.margin = "0"
                         availableDrops[i].style.marginRight = "15px"
@@ -175,32 +196,32 @@
     var scrollableContainer = ""
     var availableDropsContainers = ""
 
+
     insertIframe() //Lisätää iframe aboutin yläpuolelle näkymättömänä
 
     let currentStream = ""
     let oldStream = undefined
 
-
     //Chekataa 2 sec välein vaihtuuko striimin nimi
     setInterval(() => {
         let streamNameDiv = document.querySelector("div.tw-align-items-center.tw-flex > a") //Striimin nimi div
-        if (streamNameDiv != null) {    //Katotaa löytyykö divi
-            if (streamNameDiv.innerText.length > 0) {   //Jos löytyy katotaan onko siinä tekstiä
+        if (streamNameDiv != null) { //Katotaa löytyykö divi
+            if (streamNameDiv.innerText.length > 0) { //Jos löytyy katotaan onko siinä tekstiä
                 currentStream = streamNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
-                if (oldStream == undefined) {  //Jos ei oo vielä oldStream
-                    oldStream = currentStream   //Lisätää nykyne striimi oldStreamii
+                if (oldStream == undefined) { //Jos ei oo vielä oldStream
+                    oldStream = currentStream //Lisätää nykyne striimi oldStreamii
                     console.log("laitettii uus striimi vanhaks")
                 }
-                if (currentStream == oldStream) {   //Jos nykyne striimi sama kun vanha
+                if (currentStream == oldStream) { //Jos nykyne striimi sama kun vanha
                     console.log("Sama striimi")
                 } else {
-                    oldStream = currentStream   //Jos on uus striimi, nii lisätään sen nimi oldStreamii
+                    oldStream = currentStream //Jos on uus striimi, nii lisätään sen nimi oldStreamii
                     ifrm.style.visibility = "hidden" //Piilotetaa iframe
                     insertIframe() //Lisätää iframe uudestaa
                     console.log("Uus striimi")
                 }
             }
-        } else {    //Ei löydy nimi diviä
+        } else { //Ei löydy nimi diviä
             console.log("No stream found")
         }
     }, 2000);

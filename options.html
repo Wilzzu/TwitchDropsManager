@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <form>
+
         <h1>Twitch Drops Manager</h1>
 
         <h2>Hide in channel(s): <input type="text" id="hideChannels" placeholder="xqcow, sodapoppin"></h2>
@@ -34,10 +34,12 @@
         <h2>Hide buttons <input type="checkbox" id="hideButtons"></h2>
         
         <h2>Disable Twitch Drop Manager <input type="checkbox" id="disableTDM"></h2>
+        
+        <button id="saveSettings">Save Settings</button>
+        <button id="resetSettings">Reset to default settings</button>
+        <div id="status"></div>
 
-        <input type="submit" id="saveSettings" value="Save Settings">
-        <input type="reset" id="resetSettings" value="Reset to default settings">
-    </form>
+
 </body>
 
 </html>
