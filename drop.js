@@ -3,25 +3,29 @@
     //Asetukset variablet
     var refreshTime
     var disableTDM
+    var specificChannel
 
     //Haetaan asetukset
     chrome.storage.sync.get({
         refreshTime: 1,
         refreshRange: 1,
-        disableTDM: false
+        disableTDM: false,
+        specificDrops: false
     }, function (items) {
         refreshTime = items.refreshTime;
         disableTDM = items.disableTDM;
+        specificChannel = items.specificDrops;
     });
 
-    //
     let getOptions = setInterval(function () {
         if (refreshTime != undefined) { //katotaa onko asetukset ladannu
             console.log(refreshTime)
             console.log(disableTDM)
+            refreshTime = refreshTime * 60000 //Muunnetaan minuuteiksi
+            console.log(refreshTime)
             clearInterval(getOptions); //Lopetetaa toisto
         }
-    }, 1000);
+    }, 100);
 
     function reloadIframe() { //Päivitetää minuuti välein
         ifrm.style.visibility = "hidden"
@@ -29,7 +33,12 @@
         checkIframeDrops();
     }
 
+
+    let foundSpecificDrop = false
+    let foundClaimableDrop = false
+
     function takeDrops() {
+
         for (j = 0; j < availableDropsContainers.length; j++) {
 
             let availableDrops = availableDropsContainers[j].getElementsByClassName("tw-flex tw-flex-column tw-mg-t-2")
@@ -42,6 +51,8 @@
                     availableDrops[i].style.height = "240px"
                     availableDrops[i].style.width = "160px" //160px
                     let link = availableDropsContainers[j].querySelector("div.tw-mg-x-1 > div > p > a") //ottaa linkin divin tiedot
+
+                    let linkName = link.innerText.substring(1)
                     link.style.textAlign = "center";
                     let dropName = availableDrops[i].getElementsByClassName("tw-font-size-5 tw-semibold")[0] //Otetaa dropName tekstin tiedot
                     link.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color") //Vaihetaan linkin väri dropNamen väriseks
@@ -66,16 +77,39 @@
                             link.innerHTML = "‎" //Jos ei löytyny linkkiä jätetää teksti tyhjäks
                         }
                     }
+
                     availableDrops[i].prepend(link) //Lisätää linkki dropin yläpuolelle
                     availableDrops[i].style.cssFloat = "left"
-                    scrollableContainer.appendChild(availableDrops[i]) //Lisätää koko juttu headerii
-                } else { //Sama mutta jos on "Claim now" button
-                    if (availableDrops[i].getElementsByClassName("tw-align-items-center tw-core-button-icon tw-inline-flex").length > 0) {
+
+                    if(specificChannel == true) {       //Jos specificChannel asetus on päällä
+                        if(currentStream.toLowerCase() == linkName.toLowerCase()){  //Katotaa onko channelin ja dropin henkilön nimi sama
+                            scrollableContainer.appendChild(availableDrops[i])  //Lisätään droppi containerii
+                            foundSpecificDrop = true    //Muutetaan specificDrop value trueks
+                        }
+                        else if(currentGame.toLowerCase() == gameURL.toLowerCase()){ //Katotaanko onko striimattavan pelin ja dropin pelin nimi sama
+                            scrollableContainer.appendChild(availableDrops[i])
+                            foundSpecificDrop = true
+                        }
+                      /*  else {
+                            console.log("CURRENT CHANNEL: " + currentStream.toLowerCase() + " =/= " + linkName.toLowerCase() + " :CHANNEL DROP" )
+                            console.log("CURRENT GAME: " + currentGame.toLowerCase() + " =/= " + gameURL.toLowerCase() + " :GAME DROP" )
+                       } */
+                    }
+
+                    else {
+                        scrollableContainer.appendChild(availableDrops[i]) //Lisätää koko juttu headerii
+                    }
+                } 
+                
+                else { //Sama mutta jos on "Claim now" button
+                    if (availableDrops[i].getElementsByClassName("ScCoreButton-sc-1qn4ixc-0 ScCoreButtonPrimary-sc-1qn4ixc-1 hZEZfD tw-core-button").length > 0) {
+                        foundClaimableDrop = true
                         availableDrops[i].style.margin = "0"
                         availableDrops[i].style.marginRight = "15px"
                         availableDrops[i].style.height = "240px"
                         availableDrops[i].style.width = "160px" //160px
                         let link = availableDropsContainers[j].querySelector("div.tw-mg-x-1 > div > p > a")
+                        if(link != null){
                         link.style.textAlign = "center";
                         let dropName = availableDrops[i].getElementsByClassName("tw-font-size-5 tw-semibold")[0]
                         link.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color")
@@ -101,14 +135,48 @@
                             }
                         }
                         availableDrops[i].prepend(link)
+                    }
+                    else {
+                        let nullLink = document.createElement('p')
+                        nullLink.append("‎")
+                        nullLink.style.marginBottom = "5px"
+                        availableDrops[i].prepend(nullLink)
+                    }
+
                         availableDrops[i].style.cssFloat = "left"
                         scrollableContainer.prepend(availableDrops[i])
                     }
                 }
             }
-        }
+
+    }
+    if(specificChannel == true && foundSpecificDrop == false && foundClaimableDrop == false){
+
+        ifrm.height = "50px"
+
+        var specificRefresh = document.createElement("BUTTON");
+        specificRefresh.setAttribute("id", "refreshButtonTDM");
+        specificRefresh.innerHTML = "Refresh";
+        specificRefresh.style.textDecoration = "underline"
+        scrollableContainer.prepend(specificRefresh)
+
+        let noDropsDiv = document.createElement('p')
+        noDropsDiv.style.marginTop = "10px"
+        noDropsDiv.append("No eligible drops found on this channel. If this is your first time watching this channel while drops are enabled, it may take couple minutes to register")
+        scrollableContainer.prepend(noDropsDiv)
+
+        ifrm.contentWindow.document.getElementById("refreshButtonTDM").addEventListener("click", function() {
+            reloadIframe()
+          })
+        
+        ifrm.style.visibility = "visible"
+    } 
+    
+    else {
+        ifrm.height = "270px"
         ifrm.style.visibility = "visible" //Kun kaikki on poistettu (ja dropit lisätty) laitetaa iframe näkyvii
-        setTimeout(reloadIframe, 60000); //Reload funktio minuuti välein
+        setTimeout(reloadIframe, refreshTime); //Reload funktio käyttäjän asettaman minuutin välein
+    }
     }
 
     function createIframe() {
@@ -143,15 +211,20 @@
                 header.style.display = "none"
                 marginEdit.style.marginTop = "-30px"
                 scrollableContainer.style.visibility = "visible"
+                foundSpecificDrop = false
+                foundClaimableDrop = false
                 takeDrops()
                 clearInterval(removeElements)
             } else {
-                console.log("up0 on null")
+                console.log("Failed to load drops") //Tähän joku "Failed to load drops" jne
             }
-        }, 500);
+        }, 100);
     }
 
+    let waitForDrops = 0
+
     function checkIframeDrops() {
+        waitForDrops = 0
         iframeCreate = setInterval(function () {
             if (ifrm.contentWindow.document.getElementsByClassName("tw-border-radius-medium tw-c-background-base tw-elevation-1 tw-flex tw-flex-grow-0 tw-flex-row tw-mg-b-2")[0]) { //Jos dropit löytyy iframesta
                 if (ifrm.contentWindow.document.querySelector("div.inventory-max-width > div:nth-child(1)")) { //Kattoo löytyykö "In Progress" teksti
@@ -159,9 +232,40 @@
                     clearInterval(iframeCreate); //Lopetetaa toisto
                 }
             }
+            else if (waitForDrops > 20){
+                ifrm.height = "50px"
+
+                var noDropsButton = document.createElement("BUTTON");
+                noDropsButton.setAttribute("id", "noDropsRefreshTDM");
+                noDropsButton.innerHTML = "Refresh";
+                noDropsButton.style.textDecoration = "underline"
+                noDropsButton.style.width = "50px"
+                noDropsButton.style.marginLeft = "30px"
+                ifrm.contentWindow.document.getElementsByTagName("BODY")[0].prepend(noDropsButton)
+
+                let noDropsFoundDiv = document.createElement('p')
+                noDropsFoundDiv.append("No drops found. If you think there should be drops here, try refreshing by pressing the refresh button below")
+                noDropsFoundDiv.style.marginLeft = "30px"
+                ifrm.contentWindow.document.getElementsByTagName("BODY")[0].prepend(noDropsFoundDiv)
+
+                ifrm.contentWindow.document.getElementById("root").style.visibility = "hidden"
+                ifrm.style.visibility = "visible"
+                clearInterval(iframeCreate)
+
+                ifrm.contentWindow.document.getElementById("noDropsRefreshTDM").addEventListener("click", function() {
+                    noDropsButton.remove()
+                    noDropsFoundDiv.remove()
+                    checkIframeDrops()
+                  })
+            }
+            else {
+                waitForDrops += 1
+                console.log(waitForDrops)
+            }
         }, 100);
 
     }
+
 
     function insertIframe() {
         let insertIframe = setInterval(function () {
@@ -170,14 +274,14 @@
                 checkIframeDrops(); //Katotaa löytyykö droppeja iframesta
                 clearInterval(insertIframe); //Lopetetaa toisto
             }
-        }, 1000);
+        }, 100);
     }
 
     //Luodaan iframe
     var ifrm = document.createElement('iframe');
     ifrm.setAttribute('src', 'https://www.twitch.tv/drops/inventory');
     ifrm.width = "100%"
-    ifrm.height = "250px" //1 row 250px, 2 row 530px, 3 row 810px
+    ifrm.height = "0px" //1 row 270px, 2 row 530px, 3 row 810px
     ifrm.style.visibility = "hidden" //Piilota iframe
 
     //Listataan kaikki iframen elementit mitä tullaan käyttää
@@ -202,27 +306,48 @@
     let currentStream = ""
     let oldStream = undefined
 
+    let currentGame = ""
+    let oldGame = undefined
+
     //Chekataa 2 sec välein vaihtuuko striimin nimi
     setInterval(() => {
         let streamNameDiv = document.querySelector("div.tw-align-items-center.tw-flex > a") //Striimin nimi div
+
         if (streamNameDiv != null) { //Katotaa löytyykö divi
             if (streamNameDiv.innerText.length > 0) { //Jos löytyy katotaan onko siinä tekstiä
                 currentStream = streamNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
                 if (oldStream == undefined) { //Jos ei oo vielä oldStream
                     oldStream = currentStream //Lisätää nykyne striimi oldStreamii
-                    console.log("laitettii uus striimi vanhaks")
                 }
                 if (currentStream == oldStream) { //Jos nykyne striimi sama kun vanha
-                    console.log("Sama striimi")
                 } else {
                     oldStream = currentStream //Jos on uus striimi, nii lisätään sen nimi oldStreamii
                     ifrm.style.visibility = "hidden" //Piilotetaa iframe
                     insertIframe() //Lisätää iframe uudestaa
-                    console.log("Uus striimi")
                 }
             }
         } else { //Ei löydy nimi diviä
             console.log("No stream found")
+        }
+
+        let gameNameDiv = document.querySelector("div.tw-align-items-center.tw-flex-wrap.tw-inline-flex.tw-mg-r-1 > a") //Pelin nimi div
+
+        if (gameNameDiv != null) { //Katotaa löytyykö divi
+            if (gameNameDiv.innerText.length > 0) { //Jos löytyy katotaan onko siinä tekstiä
+                currentGame = gameNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
+                if (oldGame == undefined) { //Jos ei oo vielä oldStream
+                    oldGame = currentGame //Lisätää nykyne striimi oldStreamii
+
+                }
+                if (currentGame == oldGame) { //Jos nykyne striimi sama kun vanha
+                } 
+                else {
+                    oldGame = currentGame //Jos on uus striimi, nii lisätään sen nimi oldStreamii
+                    ifrm.style.visibility = "hidden" //Piilotetaa iframe
+                }
+            }
+        } else { //Ei löydy nimi diviä
+            console.log("No game found")
         }
     }, 2000);
 
