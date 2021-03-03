@@ -151,28 +151,27 @@
 
         }
         if (specificChannel == true && foundSpecificDrop == false && foundClaimableDrop == false) {
-            if(showHintText == true) {
-            ifrm.height = "50px"
+            if (showHintText == true) {
+                ifrm.height = "50px"
 
-            var specificRefresh = document.createElement("BUTTON");
-            specificRefresh.setAttribute("id", "refreshButtonTDM");
-            specificRefresh.innerHTML = "Refresh";
-            specificRefresh.style.textDecoration = "underline"
-            scrollableContainer.prepend(specificRefresh)
+                var specificRefresh = document.createElement("BUTTON");
+                specificRefresh.setAttribute("id", "refreshButtonTDM");
+                specificRefresh.innerHTML = "Refresh";
+                specificRefresh.style.textDecoration = "underline"
+                scrollableContainer.prepend(specificRefresh)
 
-            let noDropsDiv = document.createElement('p')
-            noDropsDiv.style.marginTop = "10px"
-            noDropsDiv.append("No eligible drops found on this channel. If this is your first time watching this channel while drops are enabled, it may take couple minutes to register")
-            scrollableContainer.prepend(noDropsDiv)
+                let noDropsDiv = document.createElement('p')
+                noDropsDiv.style.marginTop = "10px"
+                noDropsDiv.append("No eligible drops found on this channel. If this is your first time watching this channel while drops are enabled, it may take couple minutes to register")
+                scrollableContainer.prepend(noDropsDiv)
 
-            ifrm.contentWindow.document.getElementById("refreshButtonTDM").addEventListener("click", function () {
-                reloadIframe()
-            })
+                ifrm.contentWindow.document.getElementById("refreshButtonTDM").addEventListener("click", function () {
+                    reloadIframe()
+                })
 
-            ifrm.style.visibility = "visible"
-        } 
-    }
-        else {
+                ifrm.style.visibility = "visible"
+            }
+        } else {
             ifrm.height = "270px"
             ifrm.style.visibility = "visible" //Kun kaikki on poistettu (ja dropit lisätty) laitetaa iframe näkyvii
             setTimeout(reloadIframe, refreshTime); //Reload funktio käyttäjän asettaman minuutin välein
@@ -232,32 +231,32 @@
                     clearInterval(iframeCreate); //Lopetetaa toisto
                 }
             } else if (waitForDrops > 20) {
-                if(showHintText == true) {
-                ifrm.height = "50px"
+                if (showHintText == true) {
+                    ifrm.height = "50px"
 
-                var noDropsButton = document.createElement("BUTTON");
-                noDropsButton.setAttribute("id", "noDropsRefreshTDM");
-                noDropsButton.innerHTML = "Refresh";
-                noDropsButton.style.textDecoration = "underline"
-                noDropsButton.style.width = "50px"
-                noDropsButton.style.marginLeft = "30px"
-                ifrm.contentWindow.document.getElementsByTagName("BODY")[0].prepend(noDropsButton)
+                    var noDropsButton = document.createElement("BUTTON");
+                    noDropsButton.setAttribute("id", "noDropsRefreshTDM");
+                    noDropsButton.innerHTML = "Refresh";
+                    noDropsButton.style.textDecoration = "underline"
+                    noDropsButton.style.width = "50px"
+                    noDropsButton.style.marginLeft = "30px"
+                    ifrm.contentWindow.document.getElementsByTagName("BODY")[0].prepend(noDropsButton)
 
-                let noDropsFoundDiv = document.createElement('p')
-                noDropsFoundDiv.append("No drops found. If you think there should be drops here, try refreshing by pressing the refresh button below")
-                noDropsFoundDiv.style.marginLeft = "30px"
-                ifrm.contentWindow.document.getElementsByTagName("BODY")[0].prepend(noDropsFoundDiv)
+                    let noDropsFoundDiv = document.createElement('p')
+                    noDropsFoundDiv.append("No drops found. If you think there should be drops here, try refreshing by pressing the refresh button below")
+                    noDropsFoundDiv.style.marginLeft = "30px"
+                    ifrm.contentWindow.document.getElementsByTagName("BODY")[0].prepend(noDropsFoundDiv)
 
-                ifrm.contentWindow.document.getElementById("root").style.visibility = "hidden"
-                ifrm.style.visibility = "visible"
+                    ifrm.contentWindow.document.getElementById("root").style.visibility = "hidden"
+                    ifrm.style.visibility = "visible"
 
-                ifrm.contentWindow.document.getElementById("noDropsRefreshTDM").addEventListener("click", function () {
-                    noDropsButton.remove()
-                    noDropsFoundDiv.remove()
-                    checkIframeDrops()
-                })
-            }
-            clearInterval(iframeCreate)
+                    ifrm.contentWindow.document.getElementById("noDropsRefreshTDM").addEventListener("click", function () {
+                        noDropsButton.remove()
+                        noDropsFoundDiv.remove()
+                        checkIframeDrops()
+                    })
+                }
+                clearInterval(iframeCreate)
             } else {
                 waitForDrops += 1
                 console.log(waitForDrops)
@@ -269,9 +268,75 @@
 
     function insertIframe() {
         let insertIframe = setInterval(function () {
-            if (document.querySelector("div.channel-root__info > div > div:nth-child(2)") && document.querySelector("div.tw-absolute.tw-align-items-center.tw-flex.tw-full-width.tw-justify-content-center.user-avatar-animated__live")) { //katotaa löytyykö about osa sivulta ja onko se live
+            if (document.querySelector("div.channel-root__info > div > div:nth-child(2)") && document.querySelector("div.tw-absolute.tw-align-items-center.tw-flex.tw-full-width.tw-justify-content-center.user-avatar-animated__live") && document.querySelector("div.tw-flex-grow-0.tw-flex-shrink-1")) { //katotaa löytyykö about osa sivulta ja onko se live
                 document.querySelector("div.channel-root__info > div > div:nth-child(2)").prepend(ifrm) //Lisätää iframe about osan yläpuolelle
+
                 checkIframeDrops(); //Katotaa löytyykö droppeja iframesta
+
+                //Buttonit
+                if (buttonsAdded == false) {
+
+                    var dropsPageButton = document.createElement("BUTTON");
+                    var dropsPageButtonText = document.createTextNode("Drops page");
+                    dropsPageButton.appendChild(dropsPageButtonText);
+                    dropsPageButton.style.paddingLeft = "10px"
+                    dropsPageButton.style.color = "#9B67E9"
+
+                    dropsPageButton.addEventListener("mouseover", function (event) {
+                        event.target.style.textDecoration = "underline"
+                    }, false);
+
+                    dropsPageButton.addEventListener("mouseout", function (event) {
+                        event.target.style.textDecoration = "none"
+                    }, false);
+
+                    dropsPageButton.onclick = dropsPageFunc
+
+                    function dropsPageFunc() {
+                        var win = window.open("https://www.twitch.tv/drops/inventory", '_blank');
+                        win.focus();
+                    }
+
+                    var hideIframeButton = document.createElement("BUTTON");
+                    var hideIframeButtonText = document.createTextNode("Hide drops");
+                    hideIframeButton.appendChild(hideIframeButtonText);
+                    hideIframeButton.style.paddingLeft = "30px"
+                    hideIframeButton.style.color = "#9B67E9"
+
+                    hideIframeButton.addEventListener("mouseover", function (event) {
+                        event.target.style.textDecoration = "underline"
+                    }, false);
+
+                    hideIframeButton.addEventListener("mouseout", function (event) {
+                        event.target.style.textDecoration = "none"
+                    }, false);
+
+                    hideIframeButton.onclick = hideButtonFunc
+
+                    function hideButtonFunc() {
+                        if (hideDropsButton == false) {
+                            hideDropsButton = true
+                            //ifrm.style.visibility = "hidden"
+                            ifrm.style.float = "left"
+                            ifrm.style.marginLeft = "-1000000px"
+                            //ifrm.style.float = "left"
+
+                            hideIframeButtonText.nodeValue = "Show drops"
+                        } else {
+                            hideDropsButton = false
+                            //ifrm.style.visibility = "visible"
+                            hideIframeButtonText.nodeValue = "Hide drops"
+                            ifrm.style.float = "none"
+                            ifrm.style.marginLeft = "0px"
+                        }
+                    }
+
+                    document.querySelector("div.tw-flex-grow-0.tw-flex-shrink-1").append(hideIframeButton)
+                    document.querySelector("div.tw-flex-grow-0.tw-flex-shrink-1").append(dropsPageButton)
+
+                    buttonsAdded = true
+                }
+
                 clearInterval(insertIframe); //Lopetetaa toisto
             }
         }, 100);
@@ -299,6 +364,9 @@
     var marginEdit = ""
     var scrollableContainer = ""
     var availableDropsContainers = ""
+
+    var hideDropsButton = false
+    var buttonsAdded = false
 
 
     insertIframe() //Lisätää iframe aboutin yläpuolelle näkymättömänä
@@ -421,12 +489,6 @@
         */
 
     //muunna prosentit tunneiks ja minuuteiks
-
-    //SETTINGS
-    //Valitse haluuko ALL / CHANNEL SPECIFIC drops
-    //<a data-test-selector="DropsCampaignInProgressDescription-no-channels-hint-text" class="tw-link" rel="noopener noreferrer" target="_blank" href="/directory/game/Rust?tl=c2542d6d-cd10-4532-919b-3d19f30a768b">a participating live channel</a>
-    //Vaiha iframen kokoo
-    //iframe päälle/pois
 
 
     /*
