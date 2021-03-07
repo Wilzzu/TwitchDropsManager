@@ -6,6 +6,8 @@
     var specificChannel
     var hideClaimableButton
     var showHintText
+    var showTimeIn
+    var hideButtonsDefault
 
     //Haetaan asetukset
     chrome.storage.sync.get({
@@ -14,14 +16,17 @@
         disableTDM: false,
         specificDrops: false,
         hideClaimable: false,
-        hintText: true
+        hintText: true,
+        showTime: true,
+        hideButtons: false
     }, function (items) {
         refreshTime = items.refreshTime;
         disableTDM = items.disableTDM;
         specificChannel = items.specificDrops;
         hideClaimableButton = items.hideClaimable;
         showHintText = items.hintText;
-
+        showTimeIn = items.showTime;
+        hideButtonsDefault = items.hideButtons;
     });
 
     let getOptions = setInterval(function () {
@@ -57,8 +62,37 @@
                     availableDrops[i].style.marginRight = "15px"
                     availableDrops[i].style.height = "240px"
                     availableDrops[i].style.width = "160px" //160px
-                    let link = availableDropsContainers[j].querySelector("div.tw-mg-x-1 > div > p > a") //ottaa linkin divin tiedot
 
+                    let timeLeftDiv = availableDropsContainers[j].querySelector("div.tw-align-center.tw-mg-t-05")
+                    let timeLeft = timeLeftDiv.innerText
+                    if (timeLeft.includes("hour") == true && timeLeft.includes("minute") == false) {
+
+                        let percentageDone = timeLeft.split('%')[0]
+                        let totalTimeWithHours = timeLeft.split('of ')[1]
+                        let totalTime = totalTimeWithHours.split(' ')[0];
+                        let percentNumber = (100 - parseInt(percentageDone)) / 100
+                        let timeNumber = parseInt(totalTime) * 60
+
+                        let totalTimeLeft = Math.ceil(percentNumber * timeNumber)
+
+                        if (showTimeIn == true) {
+
+                            if (totalTimeLeft == 1) {
+                                timeLeftDiv.innerHTML = "1 min (99%)"
+                            } 
+                            else if (totalTimeLeft > 1 && totalTimeLeft < 60) {
+                                timeLeftDiv.innerHTML = totalTimeLeft + " min (" + percentageDone + "%)"
+                            }
+                            else if (totalTimeLeft >= 60){
+                                let getHours = Math.trunc(totalTimeLeft / 60)
+                                let getMinutes = totalTimeLeft % 60
+
+                                timeLeftDiv.innerHTML = getHours + "h " + getMinutes + "min (" + percentageDone + "%)"
+                            }
+                        }
+                    }
+
+                    let link = availableDropsContainers[j].querySelector("div.tw-mg-x-1 > div > p > a") //ottaa linkin divin tiedot
                     let linkName = link.innerText.substring(1)
                     link.style.textAlign = "center";
                     let dropName = availableDrops[i].getElementsByClassName("tw-font-size-5 tw-semibold")[0] //Otetaa dropName tekstin tiedot
@@ -101,7 +135,7 @@
                         scrollableContainer.appendChild(availableDrops[i]) //Lisätää koko juttu headerii
                     }
                 } else { //Sama mutta jos on "Claim now" button
-                    if (availableDrops[i].getElementsByClassName("tw-align-items-center tw-align-middle tw-border-bottom-left-radius-medium tw-border-bottom-right-radius-medium tw-border-top-left-radius-medium tw-border-top-right-radius-medium tw-core-button tw-core-button--overlay tw-core-button--primary tw-inline-flex tw-justify-content-center tw-overflow-hidden tw-relative").length > 0) {
+                    if (availableDrops[i].getElementsByClassName("ScCoreButton-sc-1qn4ixc-0 ScCoreButtonPrimary-sc-1qn4ixc-1 hZEZfD tw-core-button").length > 0) {
                         if (hideClaimableButton == false) { //Jos claimable drops ei oo laitettu pois asetuksista
                             foundClaimableDrop = true
                             availableDrops[i].style.margin = "0"
@@ -162,7 +196,7 @@
 
                 let noDropsDiv = document.createElement('p')
                 noDropsDiv.style.marginTop = "10px"
-                noDropsDiv.append("No eligible drops found on this channel. If this is your first time watching this channel while drops are enabled, it may take couple minutes to register")
+                noDropsDiv.append("No eligible drops found on this channel. If this is your first time watching the channel while drops are enabled, it may take couple minutes to register.")
                 scrollableContainer.prepend(noDropsDiv)
 
                 ifrm.contentWindow.document.getElementById("refreshButtonTDM").addEventListener("click", function () {
@@ -311,6 +345,17 @@
                         event.target.style.textDecoration = "none"
                     }, false);
 
+
+                    if(hideButtonsDefault == true){
+                        hideDropsButton = true
+                        //ifrm.style.visibility = "hidden"
+                        ifrm.style.float = "left"
+                        ifrm.style.marginLeft = "-1000000px"
+                        //ifrm.style.float = "left"
+    
+                        hideIframeButtonText.nodeValue = "Show drops"
+                    }
+
                     hideIframeButton.onclick = hideButtonFunc
 
                     function hideButtonFunc() {
@@ -367,7 +412,6 @@
 
     var hideDropsButton = false
     var buttonsAdded = false
-
 
     insertIframe() //Lisätää iframe aboutin yläpuolelle näkymättömänä
 

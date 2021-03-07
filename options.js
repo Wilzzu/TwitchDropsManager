@@ -5,13 +5,18 @@ function save_options() {
     var getSpecificDrops = document.getElementById('specificDrops').checked;
     var getClaimableButton = document.getElementById('hideClaimable').checked;
     var getHintText = document.getElementById('hintText').checked;
+    var getShowTime = document.getElementById('showTime').checked;
+    var getHideButtons = document.getElementById('hideButtons').checked;
+    
     chrome.storage.sync.set({
         refreshTime: getRefreshNumber,
         refreshRange: getRefreshRange,
         disableTDM: getDisableTDM,
         specificDrops: getSpecificDrops,
         hideClaimable: getClaimableButton,
-        hintText: getHintText
+        hintText: getHintText,
+        showTime: getShowTime,
+        hideButtons: getHideButtons
     }, function () {
         // Update status to let user know options were saved.
         var status = document.getElementById('status');
@@ -31,7 +36,9 @@ function restore_options() {
         disableTDM: false,
         specificDrops: false,
         hideClaimable: false,
-        hintText: true
+        hintText: true,
+        showTime: true,
+        hideButtons: false
     }, function (items) {
         document.getElementById('numberRefresh').value = items.refreshTime;
         document.getElementById('rangeRefresh').value = items.refreshRange;
@@ -39,6 +46,8 @@ function restore_options() {
         document.getElementById('specificDrops').checked = items.specificDrops;
         document.getElementById('hideClaimable').checked = items.hideClaimable;
         document.getElementById('hintText').checked = items.hintText;
+        document.getElementById('showTime').checked = items.showTime;
+        document.getElementById('hideButtons').checked = items.hideButtons;
         updateMinutes()
     });
 }
