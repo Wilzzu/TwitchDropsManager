@@ -63,7 +63,7 @@
                     availableDrops[i].style.height = "240px"
                     availableDrops[i].style.width = "160px" //160px
 
-                    let timeLeftDiv = availableDropsContainers[j].querySelector("div.tw-align-center.tw-mg-t-05")
+                    let timeLeftDiv = availableDrops[i].querySelector("div.tw-align-center.tw-mg-t-05")
                     let timeLeft = timeLeftDiv.innerText
                     if (timeLeft.includes("hour") == true && timeLeft.includes("minute") == false) {
 
@@ -74,6 +74,18 @@
                         let timeNumber = parseInt(totalTime) * 60
 
                         let totalTimeLeft = Math.ceil(percentNumber * timeNumber)
+
+                        console.log(percentageDone)
+                        console.log(totalTimeWithHours)
+
+                        console.log(totalTime)
+
+                        console.log(percentNumber)
+
+                        console.log(timeNumber)
+                        console.log(totalTimeLeft)
+                        
+
 
                         if (showTimeIn == true) {
 
@@ -185,7 +197,7 @@
 
         }
         if (specificChannel == true && foundSpecificDrop == false && foundClaimableDrop == false) {
-            if (showHintText == true) {
+            if (showHintText == false) {
                 ifrm.height = "50px"
 
                 var specificRefresh = document.createElement("BUTTON");
@@ -265,7 +277,7 @@
                     clearInterval(iframeCreate); //Lopetetaa toisto
                 }
             } else if (waitForDrops > 20) {
-                if (showHintText == true) {
+                if (showHintText == false) {
                     ifrm.height = "50px"
 
                     var noDropsButton = document.createElement("BUTTON");
@@ -277,7 +289,7 @@
                     ifrm.contentWindow.document.getElementsByTagName("BODY")[0].prepend(noDropsButton)
 
                     let noDropsFoundDiv = document.createElement('p')
-                    noDropsFoundDiv.append("No drops found. If you think there should be drops here, try refreshing by pressing the refresh button below")
+                    noDropsFoundDiv.append("No drops found. If you believe there should be drops here, try refreshing by pressing the refresh button below.")
                     noDropsFoundDiv.style.marginLeft = "30px"
                     ifrm.contentWindow.document.getElementsByTagName("BODY")[0].prepend(noDropsFoundDiv)
 
@@ -302,9 +314,8 @@
 
     function insertIframe() {
         let insertIframe = setInterval(function () {
-            if (document.querySelector("div.channel-root__info > div > div:nth-child(2)") && document.querySelector("div.tw-absolute.tw-align-items-center.tw-flex.tw-full-width.tw-justify-content-center.user-avatar-animated__live") && document.querySelector("div.tw-flex-grow-0.tw-flex-shrink-1")) { //katotaa löytyykö about osa sivulta ja onko se live
+            if (document.querySelector("div.channel-root__info > div > div:nth-child(2)") && document.querySelector("div.ScHaloIndicator-sc-1l14b0i-1.jYqVGu.tw-halo__indicator > div > div") && document.querySelector("div.tw-flex-grow-0.tw-flex-shrink-1")) { //katotaa löytyykö about osa sivulta ja onko se live
                 document.querySelector("div.channel-root__info > div > div:nth-child(2)").prepend(ifrm) //Lisätää iframe about osan yläpuolelle
-
                 checkIframeDrops(); //Katotaa löytyykö droppeja iframesta
 
                 //Buttonit

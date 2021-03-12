@@ -7,7 +7,8 @@ function save_options() {
     var getHintText = document.getElementById('hintText').checked;
     var getShowTime = document.getElementById('showTime').checked;
     var getHideButtons = document.getElementById('hideButtons').checked;
-    
+    var getHideChannels = document.getElementById('hideChannels').value;
+
     chrome.storage.sync.set({
         refreshTime: getRefreshNumber,
         refreshRange: getRefreshRange,
@@ -16,7 +17,8 @@ function save_options() {
         hideClaimable: getClaimableButton,
         hintText: getHintText,
         showTime: getShowTime,
-        hideButtons: getHideButtons
+        hideButtons: getHideButtons,
+        hideChannels: getHideChannels
     }, function () {
         // Update status to let user know options were saved.
         var status = document.getElementById('status');
@@ -36,9 +38,10 @@ function restore_options() {
         disableTDM: false,
         specificDrops: false,
         hideClaimable: false,
-        hintText: true,
+        hintText: false,
         showTime: true,
-        hideButtons: false
+        hideButtons: false,
+        hideChannels: ""
     }, function (items) {
         document.getElementById('numberRefresh').value = items.refreshTime;
         document.getElementById('rangeRefresh').value = items.refreshRange;
@@ -48,6 +51,7 @@ function restore_options() {
         document.getElementById('hintText').checked = items.hintText;
         document.getElementById('showTime').checked = items.showTime;
         document.getElementById('hideButtons').checked = items.hideButtons;
+        document.getElementById('hideChannels').value = items.hideChannels;
         updateMinutes()
     });
 }
@@ -58,7 +62,7 @@ window.addEventListener('load', function () {
     restore_options()
     document.getElementById('rangeRefresh').addEventListener("input", updateNumberRefresh);
     document.getElementById('numberRefresh').addEventListener("input", updateRangeRefresh);
-    document.getElementById('resetSettings').addEventListener("click", restore_options);
+    document.getElementById('resetSettings').addEventListener("click", resetSettings);
     document.getElementById('saveSettings').addEventListener('click', save_options);
 })
 
@@ -112,8 +116,29 @@ function updateMinutes() {
         document.getElementById('minuteAmount').innerHTML = "minutes"
     }
     console.log(refreshValue)
+    console.log("RUHRUHR: " + hideChannels.value)
+
+    if (hideChannels.value){
+        console.log("XCDDDD")
+    }
+
 }
 
-function resetButton() {
+
+function resetSettings() {
+
+    if (confirm("Reset to default settings?")) {
+    document.getElementById('numberRefresh').value = 1;
+    document.getElementById('rangeRefresh').value = 1;
+    document.getElementById('disableTDM').checked = false;
+    document.getElementById('specificDrops').checked = false;
+    document.getElementById('hideClaimable').checked = false;
+    document.getElementById('hintText').checked = false;
+    document.getElementById('showTime').checked = true;
+    document.getElementById('hideButtons').checked = false;
+    document.getElementById('hideChannels').value = "";
+    save_options()
     document.getElementById('minuteAmount').innerHTML = "minute"
+
+    }
 }

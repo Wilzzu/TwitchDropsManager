@@ -4,8 +4,7 @@
   "description": "",
   "main": "drop.js",
   "dependencies": {
-    "jquery": "^3.5.1",
-    "puppeteer": "^5.5.0"
+    "jquery": "^3.6.0"
   },
   "devDependencies": {},
   "scripts": {
