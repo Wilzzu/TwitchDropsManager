@@ -35,6 +35,7 @@
             console.log(disableTDM)
             refreshTime = refreshTime * 60000 //Muunnetaan minuuteiksi
             console.log(refreshTime)
+            start()
             clearInterval(getOptions); //Lopetetaa toisto
         }
     }, 100);
@@ -84,18 +85,16 @@
 
                         console.log(timeNumber)
                         console.log(totalTimeLeft)
-                        
+
 
 
                         if (showTimeIn == true) {
 
                             if (totalTimeLeft == 1) {
                                 timeLeftDiv.innerHTML = "1 min (99%)"
-                            } 
-                            else if (totalTimeLeft > 1 && totalTimeLeft < 60) {
+                            } else if (totalTimeLeft > 1 && totalTimeLeft < 60) {
                                 timeLeftDiv.innerHTML = totalTimeLeft + " min (" + percentageDone + "%)"
-                            }
-                            else if (totalTimeLeft >= 60){
+                            } else if (totalTimeLeft >= 60) {
                                 let getHours = Math.trunc(totalTimeLeft / 60)
                                 let getMinutes = totalTimeLeft % 60
 
@@ -357,13 +356,13 @@
                     }, false);
 
 
-                    if(hideButtonsDefault == true){
+                    if (hideButtonsDefault == true) {
                         hideDropsButton = true
                         //ifrm.style.visibility = "hidden"
                         ifrm.style.float = "left"
                         ifrm.style.marginLeft = "-1000000px"
                         //ifrm.style.float = "left"
-    
+
                         hideIframeButtonText.nodeValue = "Show drops"
                     }
 
@@ -400,10 +399,6 @@
 
     //Luodaan iframe
     var ifrm = document.createElement('iframe');
-    ifrm.setAttribute('src', 'https://www.twitch.tv/drops/inventory');
-    ifrm.width = "100%"
-    ifrm.height = "0px" //1 row 270px, 2 row 530px, 3 row 810px
-    ifrm.style.visibility = "hidden" //Piilota iframe
 
     //Listataan kaikki iframen elementit mitä tullaan käyttää
     var up0 = ""
@@ -424,57 +419,68 @@
     var hideDropsButton = false
     var buttonsAdded = false
 
-    insertIframe() //Lisätää iframe aboutin yläpuolelle näkymättömänä
-
     let currentStream = ""
     let oldStream = undefined
 
     let currentGame = ""
     let oldGame = undefined
 
-    //Chekataa 2 sec välein vaihtuuko striimin nimi
-    setInterval(() => {
-        let streamNameDiv = document.querySelector("div.tw-align-items-center.tw-flex > a") //Striimin nimi div
+    function start() {
+        if (disableTDM == false) {
 
-        if (streamNameDiv != null) { //Katotaa löytyykö divi
-            if (streamNameDiv.innerText.length > 0) { //Jos löytyy katotaan onko siinä tekstiä
-                currentStream = streamNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
-                if (oldStream == undefined) { //Jos ei oo vielä oldStream
-                    oldStream = currentStream //Lisätää nykyne striimi oldStreamii
+            ifrm.setAttribute('src', 'https://www.twitch.tv/drops/inventory');
+            ifrm.width = "100%"
+            ifrm.height = "0px" //1 row 270px, 2 row 530px, 3 row 810px
+            ifrm.style.visibility = "hidden" //Piilota iframe
+            insertIframe() //Lisätää iframe aboutin yläpuolelle näkymättömänä
+
+            //Chekataa 2 sec välein vaihtuuko striimin nimi
+            setInterval(() => {
+                let streamNameDiv = document.querySelector("div.tw-align-items-center.tw-flex > a") //Striimin nimi div
+
+                if (streamNameDiv != null) { //Katotaa löytyykö divi
+                    if (streamNameDiv.innerText.length > 0) { //Jos löytyy katotaan onko siinä tekstiä
+                        currentStream = streamNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
+                        if (oldStream == undefined) { //Jos ei oo vielä oldStream
+                            oldStream = currentStream //Lisätää nykyne striimi oldStreamii
+                        }
+                        if (currentStream == oldStream) { //Jos nykyne striimi sama kun vanha
+                        } else {
+                            oldStream = currentStream //Jos on uus striimi, nii lisätään sen nimi oldStreamii
+                            ifrm.style.visibility = "hidden" //Piilotetaa iframe
+                            insertIframe() //Lisätää iframe uudestaa
+                        }
+                    }
+                } else { //Ei löydy nimi diviä
+                    console.log("No stream found")
                 }
-                if (currentStream == oldStream) { //Jos nykyne striimi sama kun vanha
-                } else {
-                    oldStream = currentStream //Jos on uus striimi, nii lisätään sen nimi oldStreamii
-                    ifrm.style.visibility = "hidden" //Piilotetaa iframe
-                    insertIframe() //Lisätää iframe uudestaa
+
+                let gameNameDiv = document.querySelector("div.tw-align-items-center.tw-flex-wrap.tw-inline-flex.tw-mg-r-1 > a") //Pelin nimi div
+
+                if (gameNameDiv != null) { //Katotaa löytyykö divi
+                    if (gameNameDiv.innerText.length > 0) { //Jos löytyy katotaan onko siinä tekstiä
+                        currentGame = gameNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
+                        if (oldGame == undefined) { //Jos ei oo vielä oldStream
+                            oldGame = currentGame //Lisätää nykyne striimi oldStreamii
+
+                        }
+                        if (currentGame == oldGame) { //Jos nykyne striimi sama kun vanha
+                        } else {
+                            oldGame = currentGame //Jos on uus striimi, nii lisätään sen nimi oldStreamii
+                            ifrm.style.visibility = "hidden" //Piilotetaa iframe
+                        }
+                    }
+                } else { //Ei löydy nimi diviä
+                    console.log("No game found")
                 }
-            }
-        } else { //Ei löydy nimi diviä
-            console.log("No stream found")
+            }, 2000);
+
+        } else {
+            console.log('%c !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ', 'background: #ff0000; color: #fff')
+            console.log('%c Twitch Drops Manager is disabled in the settings ', 'background: #a970ff; color: #fff')
+            console.log('%c !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ', 'background: #ff0000; color: #fff')
         }
-
-        let gameNameDiv = document.querySelector("div.tw-align-items-center.tw-flex-wrap.tw-inline-flex.tw-mg-r-1 > a") //Pelin nimi div
-
-        if (gameNameDiv != null) { //Katotaa löytyykö divi
-            if (gameNameDiv.innerText.length > 0) { //Jos löytyy katotaan onko siinä tekstiä
-                currentGame = gameNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
-                if (oldGame == undefined) { //Jos ei oo vielä oldStream
-                    oldGame = currentGame //Lisätää nykyne striimi oldStreamii
-
-                }
-                if (currentGame == oldGame) { //Jos nykyne striimi sama kun vanha
-                } else {
-                    oldGame = currentGame //Jos on uus striimi, nii lisätään sen nimi oldStreamii
-                    ifrm.style.visibility = "hidden" //Piilotetaa iframe
-                }
-            }
-        } else { //Ei löydy nimi diviä
-            console.log("No game found")
-        }
-    }, 2000);
-
-
-
+    }
 
 
     //Päivitä iframe 10 seka välei
