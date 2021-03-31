@@ -5,38 +5,45 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
     <title>Twitch Drops Manager</title>
     <script src="drop.js"></script>
     <script src="options.js"></script>
 </head>
 
-<body>
+<body id="bodySettings">
 
-        <h1>Twitch Drops Manager</h1>
+        <h1 id="h1Settings">Twitch Drops Manager</h1>
 
-        <h2>Hide in channel(s): <input type="text" id="hideChannels" placeholder="xqcow, sodapoppin"></h2>
+<div class="settingsWrapper">
 
-        <h2>Refresh every <input type="range" id="rangeRefresh" min="0.0" max="60" value="1" step="1">
+    <div class="settingsDiv">
+
+        <h2 class="h2Settings">Hide in channel(s): <input type="text" id="hideChannels" class="channelInput" placeholder="xqcow, sodapoppin, etc..."></h2>
+        
+        <h2 class="h2SettingsRefresh">Refresh every </h2>
+            <input type="range" id="rangeRefresh" min="0.0" max="60" value="1" step="1">
+            <h2 class="h2SettingsRefresh">
             <input type="number" id="numberRefresh" min="0.1" max="60.0" value="1.0" step="0.1">
-            <span id="minuteAmount">minute</span>
-        </h2>
+            <span id="minuteAmount">minute</span></h2>
 
-        <h2>Show time left in hours and minutes <input type="checkbox" id="showTime"></h2>
+        <h2 class="h2SettingsTime">Show time left in hours and minutes <input type="checkbox" id="showTime"><label for="showTime"></label></h2>
 
-        <h2>Show only drops available on the current channel <input type="checkbox" id="specificDrops"></h2> <!-- Doesn't show all drops, Shows only the drops available for current channel -->
-        
-        <h2>Hide claimable drops <input type="checkbox" id="hideClaimable"></h2>
+        <h2 class="h2SettingsCheckbox">Hide drops by default <input type="checkbox" id="hideButtons"><label for="hideButtons"></label></h2>
 
-        <h2>Hide "No drops available" hint text <input type="checkbox" id="hintText"></h2>
+        <!-- <h2 class="h2SettingsCheckbox">Show only channel specific drops <input type="checkbox" id="specificDrops"><label for="specificDrops"></label></h2> -->
+             
+        <h2 class="h2SettingsCheckbox">Hide claimable drops <input type="checkbox" id="hideClaimable"><label for="hideClaimable"></label></h2>
 
-        <h2>Hide drops by default <input type="checkbox" id="hideButtons"></h2>
-        
-        <h2>Disable Twitch Drop Manager <input type="checkbox" id="disableTDM"></h2>
+        <h2 class="h2SettingsCheckbox">Hide "No drops available" hint text <input type="checkbox" id="hintText"><label for="hintText"></label></h2>
+   
+        <h2 class="h2SettingsCheckbox">Disable Twitch Drop Manager <input type="checkbox" id="disableTDM"><label for="disableTDM"></label></h2>
         
         <button id="saveSettings">Save Settings</button>
         <button id="resetSettings">Reset to default settings</button>
-        <div id="status"></div>
-
+        <div id="status">Options saved.</div>
+    </div>
+</div>
 
 </body>
 

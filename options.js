@@ -2,7 +2,7 @@ function save_options() {
     var getRefreshNumber = document.getElementById('numberRefresh').value;
     var getRefreshRange = document.getElementById('rangeRefresh').value;
     var getDisableTDM = document.getElementById('disableTDM').checked;
-    var getSpecificDrops = document.getElementById('specificDrops').checked;
+    // var getSpecificDrops = document.getElementById('specificDrops').checked;
     var getClaimableButton = document.getElementById('hideClaimable').checked;
     var getHintText = document.getElementById('hintText').checked;
     var getShowTime = document.getElementById('showTime').checked;
@@ -13,7 +13,7 @@ function save_options() {
         refreshTime: getRefreshNumber,
         refreshRange: getRefreshRange,
         disableTDM: getDisableTDM,
-        specificDrops: getSpecificDrops,
+        // specificDrops: getSpecificDrops,
         hideClaimable: getClaimableButton,
         hintText: getHintText,
         showTime: getShowTime,
@@ -22,10 +22,10 @@ function save_options() {
     }, function () {
         // Update status to let user know options were saved.
         var status = document.getElementById('status');
-        status.textContent = 'Options saved.';
+        status.style.opacity = '100%';
         setTimeout(function () {
-            status.textContent = '';
-        }, 1750);
+            status.style.opacity = '0%';
+        }, 2200);
     });
 }
 
@@ -36,7 +36,7 @@ function restore_options() {
         refreshTime: 1,
         refreshRange: 1,
         disableTDM: false,
-        specificDrops: false,
+        // specificDrops: false,
         hideClaimable: false,
         hintText: false,
         showTime: true,
@@ -46,7 +46,7 @@ function restore_options() {
         document.getElementById('numberRefresh').value = items.refreshTime;
         document.getElementById('rangeRefresh').value = items.refreshRange;
         document.getElementById('disableTDM').checked = items.disableTDM;
-        document.getElementById('specificDrops').checked = items.specificDrops;
+        // document.getElementById('specificDrops').checked = items.specificDrops;
         document.getElementById('hideClaimable').checked = items.hideClaimable;
         document.getElementById('hintText').checked = items.hintText;
         document.getElementById('showTime').checked = items.showTime;
@@ -115,30 +115,23 @@ function updateMinutes() {
     } else if (document.getElementById('numberRefresh').value <= 1) {
         document.getElementById('minuteAmount').innerHTML = "minutes"
     }
-    console.log(refreshValue)
-    console.log("RUHRUHR: " + hideChannels.value)
-
-    if (hideChannels.value){
-        console.log("XCDDDD")
-    }
-
 }
 
 
 function resetSettings() {
 
     if (confirm("Reset to default settings?")) {
-    document.getElementById('numberRefresh').value = 1;
-    document.getElementById('rangeRefresh').value = 1;
+    document.getElementById('numberRefresh').value = 5;
+    document.getElementById('rangeRefresh').value = 5;
     document.getElementById('disableTDM').checked = false;
-    document.getElementById('specificDrops').checked = false;
+    // document.getElementById('specificDrops').checked = false;
     document.getElementById('hideClaimable').checked = false;
     document.getElementById('hintText').checked = false;
     document.getElementById('showTime').checked = true;
     document.getElementById('hideButtons').checked = false;
     document.getElementById('hideChannels').value = "";
     save_options()
-    document.getElementById('minuteAmount').innerHTML = "minute"
+    document.getElementById('minuteAmount').innerHTML = "minutes"
 
     }
 }

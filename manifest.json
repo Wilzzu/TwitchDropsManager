@@ -5,13 +5,15 @@
     "description": "brrrr",
     "content_scripts": [{
         "matches": ["https://www.twitch.tv/*"],
-        "js": ["drop.js"],
-        "css": ["styles.css"]
+        "js": ["drop.js"]
     }],
-
+	
+    "background": {
+        "scripts": ["background.js"]
+      },
     "options_page": "options.html",
-    
     "permissions":[
-        "storage"
+        "storage",
+        "tabs"
     ]
 }

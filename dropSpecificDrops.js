@@ -3,7 +3,7 @@
     //Asetukset variablet
     var refreshTime
     var disableTDM
-    // var specificChannel
+    var specificChannel
     var hideClaimableButton
     var showHintText
     var showTimeIn
@@ -15,7 +15,7 @@
         refreshTime: 1,
         refreshRange: 1,
         disableTDM: false,
-        // specificDrops: false,
+        specificDrops: false,
         hideClaimable: false,
         hintText: true,
         showTime: true,
@@ -24,7 +24,7 @@
     }, function (items) {
         refreshTime = items.refreshTime;
         disableTDM = items.disableTDM;
-        // specificChannel = items.specificDrops;
+        specificChannel = items.specificDrops;
         hideClaimableButton = items.hideClaimable;
         showHintText = items.hintText;
         showTimeIn = items.showTime;
@@ -46,8 +46,8 @@
         checkIframeDrops();
     }
 
+    let foundSpecificDrop = false
     let foundClaimableDrop = false
-    let foundDrops = 0
 
     function takeDrops() {
 
@@ -62,6 +62,7 @@
                     availableDrops[i].style.marginRight = "15px"
                     availableDrops[i].style.height = "245px"
                     availableDrops[i].style.width = "160px" //160px
+
                     let timeLeftDiv = availableDrops[i].querySelector("div.tw-align-center.tw-mg-t-05")
                     let timeLeft = timeLeftDiv.innerText
                     if (timeLeft.includes("hour") == true && timeLeft.includes("minute") == false) {
@@ -92,6 +93,7 @@
 
                     let link = availableDropsContainers[j].querySelector("div.tw-mg-x-1 > div > p > a") //ottaa linkin divin tiedot
 
+                    let linkName = link.innerText.substring(1)
                     link.style.textAlign = "center";
                     let dropName = availableDrops[i].getElementsByClassName("tw-font-size-5 tw-semibold")[0] //Otetaa dropName tekstin tiedot
                     link.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color") //Vaihetaan linkin väri dropNamen väriseks
@@ -137,9 +139,19 @@
 
                     availableDrops[i].prepend(link) //Lisätää linkki dropin yläpuolelle
                     availableDrops[i].style.cssFloat = "left"
-                    scrollableContainer.appendChild(availableDrops[i]) //Lisätää koko juttu headerii
-                    foundDrops += 1
 
+                    if (specificChannel == true) { //Jos specificChannel asetus on päällä
+                        if (currentStream.toLowerCase() == linkName.toLowerCase()) { //Katotaa onko channelin ja dropin henkilön nimi sama
+                            scrollableContainer.appendChild(availableDrops[i]) //Lisätään droppi containerii
+                            foundSpecificDrop = true //Muutetaan specificDrop value trueks
+                        } else if (currentGame.toLowerCase() == gameURL.toLowerCase()) { //Katotaanko onko striimattavan pelin ja dropin pelin nimi sama
+                            scrollableContainer.appendChild(availableDrops[i])
+                            foundSpecificDrop = true
+                        }
+
+                    } else {
+                        scrollableContainer.appendChild(availableDrops[i]) //Lisätää koko juttu headerii
+                    }
                 } else { //Sama mutta jos on "Claim now" button
                     if (availableDrops[i].getElementsByClassName("ScCoreButton-sc-1qn4ixc-0 ScCoreButtonPrimary-sc-1qn4ixc-1 hZEZfD tw-core-button").length > 0) {
                         if (hideClaimableButton == false) { //Jos claimable drops ei oo laitettu pois asetuksista
@@ -200,15 +212,13 @@
 
                             availableDrops[i].style.cssFloat = "left"
                             scrollableContainer.prepend(availableDrops[i])
-                            foundDrops += 1
-
                         }
                     }
                 }
             }
 
         }
-        if (foundDrops = 0) {
+        if (specificChannel == true && foundSpecificDrop == false && foundClaimableDrop == false) {
             if (showHintText == false) {
                 ifrm.height = "50px"
 
@@ -267,6 +277,7 @@
                 header.style.display = "none"
                 marginEdit.style.marginTop = "-30px"
                 scrollableContainer.style.visibility = "visible"
+                foundSpecificDrop = false
                 foundClaimableDrop = false
                 takeDrops()
                 clearInterval(removeElements)
@@ -330,10 +341,118 @@
                     checkIframeDrops(); //Katotaa löytyykö droppeja iframesta
 
                     //Buttonit
+                    console.log(buttonsAdded)
+                    if (buttonsAdded == false) {
 
-                    if (document.getElementsByClassName("iFrameSettingsButton").length == 0 && document.getElementsByClassName("dropsPageButton").length == 0 && document.getElementsByClassName("iFrameButton").length == 0) {
-                    addButtons()
-                }
+                        settingsButton = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                        settingsButton.setAttribute("aria-hidden", "true");
+                        settingsButton.setAttribute('viewBox', '0 0 512 512');
+                        settingsButton.setAttribute('width', '16px');
+                        settingsButton.setAttribute('height', '16px');
+
+                        var path = document.createElementNS("http://www.w3.org/2000/svg", 'path');
+                        path.setAttribute('d', "M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z");
+                        path.setAttribute('fill', '#9B67E9');
+
+                        settingsButton.appendChild(path);
+
+                        settingsButton.style.marginLeft = "10px"
+                        settingsButton.style.marginBottom = "-4px"
+                        //settingsButton.style.color = "#9B67E9"
+
+                        settingsButton.addEventListener("mouseover", function (event) {
+                            event.target.style.cursor = "pointer";
+                        }, false);
+
+                        settingsButton.addEventListener("mouseout", function (event) {
+                            event.target.style.cursor = "default";
+                        }, false);
+
+
+                        settingsButton.onclick = openSettings
+
+                        function openSettings() {
+                            chrome.runtime.sendMessage({
+                                    message: 'buttonClicked'
+                                },
+                                function () {});
+
+                        }
+                        ///////////////////////////////////////////////
+
+                        dropsPageButton = document.createElement("BUTTON");
+                        var dropsPageButtonText = document.createTextNode("Drops page");
+                        dropsPageButton.appendChild(dropsPageButtonText);
+                        dropsPageButton.style.paddingLeft = "10px"
+                        dropsPageButton.style.color = "#9B67E9"
+
+                        dropsPageButton.addEventListener("mouseover", function (event) {
+                            event.target.style.textDecoration = "underline"
+                        }, false);
+
+                        dropsPageButton.addEventListener("mouseout", function (event) {
+                            event.target.style.textDecoration = "none"
+                        }, false);
+
+                        dropsPageButton.onclick = dropsPageFunc
+
+                        function dropsPageFunc() {
+                            var win = window.open("https://www.twitch.tv/drops/inventory", '_blank');
+                            win.focus();
+                        }
+
+                        hideIframeButton = document.createElement("BUTTON");
+                        var hideIframeButtonText = document.createTextNode("Hide drops");
+                        hideIframeButton.appendChild(hideIframeButtonText);
+                        hideIframeButton.style.paddingLeft = "30px"
+                        hideIframeButton.style.color = "#9B67E9"
+
+                        hideIframeButton.addEventListener("mouseover", function (event) {
+                            event.target.style.textDecoration = "underline"
+                        }, false);
+
+                        hideIframeButton.addEventListener("mouseout", function (event) {
+                            event.target.style.textDecoration = "none"
+                        }, false);
+
+
+                        if (hideButtonsDefault == true) {
+                            hideDropsButton = true
+                            //ifrm.style.visibility = "hidden"
+                            ifrm.style.float = "left"
+                            ifrm.style.marginLeft = "-1000000px"
+                            //ifrm.style.float = "left"
+
+                            hideIframeButtonText.nodeValue = "Show drops"
+                        }
+
+                        hideIframeButton.onclick = hideButtonFunc
+
+                        function hideButtonFunc() {
+                            if (hideDropsButton == false) {
+                                hideDropsButton = true
+                                //ifrm.style.visibility = "hidden"
+                                ifrm.style.float = "left"
+                                ifrm.style.marginLeft = "-1000000px"
+                                //ifrm.style.float = "left"
+
+                                hideIframeButtonText.nodeValue = "Show drops"
+                            } else {
+                                hideDropsButton = false
+                                //ifrm.style.visibility = "visible"
+                                hideIframeButtonText.nodeValue = "Hide drops"
+                                ifrm.style.float = "none"
+                                ifrm.style.marginLeft = "0px"
+                            }
+                        }
+
+                        document.querySelector("div.tw-flex-grow-0.tw-flex-shrink-1").append(hideIframeButton)
+                        document.querySelector("div.tw-flex-grow-0.tw-flex-shrink-1").append(dropsPageButton)
+                        document.querySelector("div.tw-flex-grow-0.tw-flex-shrink-1").append(settingsButton)
+
+                        buttonsAdded = true
+                    }
+
                     clearInterval(insertIframe); //Lopetetaa toisto
                 } else {
                     clearInterval(insertIframe);
@@ -362,6 +481,7 @@
     var availableDropsContainers = ""
 
     var hideDropsButton = false
+    var buttonsAdded = false
 
     let currentStream = ""
     let oldStream = undefined
@@ -371,299 +491,69 @@
 
     var hideIframeButton
     var dropsPageButton
-    var settingsButton
-
-    function settingsButtonFunc(){
-        settingsButton = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        settingsButton.setAttribute("aria-hidden", "true");
-        settingsButton.setAttribute('viewBox', '0 0 512 512');
-        settingsButton.setAttribute('width', '16px');
-        settingsButton.setAttribute('height', '16px');
-        settingsButton.className = "iFrameSettingsButton"
-
-
-        var path = document.createElementNS("http://www.w3.org/2000/svg", 'path');
-        path.setAttribute('d', "M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z");
-        path.setAttribute('fill', '#9B67E9');
-
-        settingsButton.appendChild(path);
-
-        settingsButton.style.marginLeft = "10px"
-        settingsButton.style.marginBottom = "-4px"
-        //settingsButton.style.color = "#9B67E9"
-
-        settingsButton.addEventListener("mouseover", function (event) {
-            event.target.style.cursor = "pointer";
-        }, false);
-
-        settingsButton.addEventListener("mouseout", function (event) {
-            event.target.style.cursor = "default";
-        }, false);
-
-
-        settingsButton.onclick = openSettings
-
-        function openSettings() {
-            chrome.runtime.sendMessage({
-                    message: 'buttonClicked'
-                },
-                function () {});
-
-        }
-    }
-
-    function addButtons() {
-
-        settingsButtonFunc()
-
-        dropsPageButton = document.createElement("BUTTON");
-        var dropsPageButtonText = document.createTextNode("Drops page");
-        dropsPageButton.appendChild(dropsPageButtonText);
-        dropsPageButton.style.paddingLeft = "10px"
-        dropsPageButton.style.color = "#9B67E9"
-        dropsPageButton.className = "dropsPageButton"
-
-
-        dropsPageButton.addEventListener("mouseover", function (event) {
-            event.target.style.textDecoration = "underline"
-        }, false);
-
-        dropsPageButton.addEventListener("mouseout", function (event) {
-            event.target.style.textDecoration = "none"
-        }, false);
-
-        dropsPageButton.onclick = dropsPageFunc
-
-        function dropsPageFunc() {
-            var win = window.open("https://www.twitch.tv/drops/inventory", '_blank');
-            win.focus();
-        }
-
-        hideIframeButton = document.createElement("BUTTON");
-        var hideIframeButtonText = document.createTextNode("Hide drops");
-        hideIframeButton.appendChild(hideIframeButtonText);
-        hideIframeButton.style.paddingLeft = "30px"
-        hideIframeButton.style.color = "#9B67E9"
-        hideIframeButton.className = "iFrameButton"
-
-        hideIframeButton.addEventListener("mouseover", function (event) {
-            event.target.style.textDecoration = "underline"
-        }, false);
-
-        hideIframeButton.addEventListener("mouseout", function (event) {
-            event.target.style.textDecoration = "none"
-        }, false);
-
-
-        if (hideButtonsDefault == true) {
-            hideDropsButton = true
-            //ifrm.style.visibility = "hidden"
-            ifrm.style.float = "left"
-            ifrm.style.marginLeft = "-1000000px"
-            //ifrm.style.float = "left"
-
-            hideIframeButtonText.nodeValue = "Show drops"
-        }
-
-        hideIframeButton.onclick = hideButtonFunc
-
-        function hideButtonFunc() {
-            if (hideDropsButton == false) {
-                hideDropsButton = true
-                //ifrm.style.visibility = "hidden"
-                ifrm.style.float = "left"
-                ifrm.style.marginLeft = "-1000000px"
-                //ifrm.style.float = "left"
-
-                hideIframeButtonText.nodeValue = "Show drops"
-            } else {
-                hideDropsButton = false
-                //ifrm.style.visibility = "visible"
-                hideIframeButtonText.nodeValue = "Hide drops"
-                ifrm.style.float = "none"
-                ifrm.style.marginLeft = "0px"
-            }
-        }
-
-        document.querySelector("div.tw-flex-grow-0.tw-flex-shrink-1").append(hideIframeButton)
-        document.querySelector("div.tw-flex-grow-0.tw-flex-shrink-1").append(dropsPageButton)
-        document.querySelector("div.tw-flex-grow-0.tw-flex-shrink-1").append(settingsButton)
-    }
 
     function start() {
         if (disableTDM == false) {
-
             ifrm.setAttribute('src', 'https://www.twitch.tv/drops/inventory');
             ifrm.width = "100%"
             ifrm.height = "0px" //1 row 270px, 2 row 530px, 3 row 810px
             ifrm.style.visibility = "hidden" //Piilota iframe
             insertIframe() //Lisätää iframe aboutin yläpuolelle näkymättömänä
-            let gameCheckTime = 0
 
-            let nameCheck = setInterval(function () {
-            let streamNameDiv = document.querySelector("div.tw-align-items-center.tw-flex > a") //Striimin nimi div
-        
-                        if (streamNameDiv != null) { //Katotaa löytyykö divi
-                            if (streamNameDiv.innerText.length > 0) { //Jos löytyy katotaan onko siinä tekstiä
-                                currentStream = streamNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
-                                if (oldStream == undefined) { //Jos ei oo vielä oldStream
-                                    oldStream = currentStream //Lisätää nykyne striimi oldStreamii
+            //Chekataa 2 sec välein vaihtuuko striimin nimi
+            setInterval(() => {
+                let streamNameDiv = document.querySelector("div.tw-align-items-center.tw-flex > a") //Striimin nimi div
 
-                                }
-                                if (currentStream == oldStream) { //Jos nykyne striimi sama kun vanha
-                                } else {
-                                    oldStream = currentStream //Jos on uus striimi, nii lisätään sen nimi oldStreamii
-                                    console.log(oldStream)
+                if (streamNameDiv != null) { //Katotaa löytyykö divi
+                    if (streamNameDiv.innerText.length > 0) { //Jos löytyy katotaan onko siinä tekstiä
+                        currentStream = streamNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
+                        if (oldStream == undefined) { //Jos ei oo vielä oldStream
+                            oldStream = currentStream //Lisätää nykyne striimi oldStreamii
+                        }
+                        if (currentStream == oldStream) { //Jos nykyne striimi sama kun vanha
+                        } else {
+                            oldStream = currentStream //Jos on uus striimi, nii lisätään sen nimi oldStreamii
+                            ifrm.style.visibility = "hidden" //Piilotetaa iframe
+                            if (hideChannelsList.toLowerCase().split(", ").indexOf(oldStream.toLowerCase()) == -1) {
+                                hideIframeButton.style.visibility = 'visible'
+                                dropsPageButton.style.visibility = 'visible'
+                                settingsButton.style.visibility = 'visible'
 
 
-                                    ifrm.style.visibility = "hidden" //Piilotetaa iframe
-                                    if (hideChannelsList.toLowerCase().split(", ").indexOf(oldStream.toLowerCase()) == -1) {
-                                        hideIframeButton.style.visibility = 'visible'
-                                        dropsPageButton.style.visibility = 'visible'
-                                        settingsButton.style.visibility = 'visible'
-        
-        
-                                        insertIframe() //Lisätää iframe uudestaa
-                                    } else {
-                                        ifrm.height = "0px"
-                                        hideIframeButton.style.visibility = 'hidden';
-                                        dropsPageButton.style.visibility = 'hidden';
-                                        settingsButton.style.visibility = 'hidden';
-                                        clearTimeout(reloadTime)
-                                    }
-                                }
+                                insertIframe() //Lisätää iframe uudestaa
+                            } else {
+                                ifrm.height = "0px"
+                                hideIframeButton.style.visibility = 'hidden';
+                                dropsPageButton.style.visibility = 'hidden';
+                                settingsButton.style.visibility = 'hidden';
+                                clearTimeout(reloadTime)
                             }
                         }
-        
-                        let gameNameDiv = document.querySelector("div.tw-align-items-center.tw-flex-wrap.tw-inline-flex.tw-mg-r-1 > a") //Pelin nimi div
-        
-                        if (gameNameDiv != null) { //Katotaa löytyykö divi
-                            if (gameNameDiv.innerText.length > 0) { //Jos löytyy katotaan onko siinä tekstiä
-                                currentGame = gameNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
-                            
-                                if (oldGame == undefined) { //Jos ei oo vielä oldStream
-                                    oldGame = currentGame //Lisätää nykyne striimi oldStreamii
-                                }
-                                if (currentGame == oldGame) { //Jos nykyne striimi sama kun vanha
-                                } else {
-                                    oldGame = currentGame //Jos on uus striimi, nii lisätään sen nimi oldStreamii
-                                    ifrm.style.visibility = "hidden" //Piilotetaa iframe
-                                }
-                            }
+                    }
+                }
+
+                let gameNameDiv = document.querySelector("div.tw-align-items-center.tw-flex-wrap.tw-inline-flex.tw-mg-r-1 > a") //Pelin nimi div
+
+                if (gameNameDiv != null) { //Katotaa löytyykö divi
+                    if (gameNameDiv.innerText.length > 0) { //Jos löytyy katotaan onko siinä tekstiä
+                        currentGame = gameNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
+                        if (oldGame == undefined) { //Jos ei oo vielä oldStream
+                            oldGame = currentGame //Lisätää nykyne striimi oldStreamii
+
                         }
-                        gameCheckTime += 1
-                        console.log(gameCheckTime)
-                        if(gameCheckTime > 20){
-                            clearInterval(nameCheck);
+                        if (currentGame == oldGame) { //Jos nykyne striimi sama kun vanha
+                        } else {
+                            oldGame = currentGame //Jos on uus striimi, nii lisätään sen nimi oldStreamii
+                            ifrm.style.visibility = "hidden" //Piilotetaa iframe
                         }
-
-                        console.log(oldGame + oldStream)
-                        if(oldGame !== undefined && oldStream !== undefined){
-                            clearInterval(nameCheck);
-                        } 
-                    }, 500);
-
-            //Chekataa vaihtuuko striimin url
-            chrome.runtime.onMessage.addListener(
-                function(request, sender, sendResponse) {
-                  // listen for messages sent from background.js
-                  if (request.message === 'newURL') {        
-                    console.log(request.url) // new url
-                    gameCheckTime = 0
-                    urlCheck = setInterval(function () {
-                        let streamNameDiv = document.querySelector("div.tw-align-items-center.tw-flex > a") //Striimin nimi div
-        
-                        if (streamNameDiv != null) { //Katotaa löytyykö divi
-                            if (streamNameDiv.innerText.length > 0) { //Jos löytyy katotaan onko siinä tekstiä
-                                currentStream = streamNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
-
-                                if (oldStream == undefined) { //Jos ei oo vielä oldStream
-                                    oldStream = currentStream //Lisätää nykyne striimi oldStreamii
-
-                                }
-                                if (currentStream == oldStream) { //Jos nykyne striimi sama kun vanha
-                                } else {
-                                    oldStream = currentStream //Jos on uus striimi, nii lisätään sen nimi oldStreamii
-                                    clearInterval(urlCheck);
-
-
-                                    ifrm.style.visibility = "hidden" //Piilotetaa iframe
-                                    if (hideChannelsList.toLowerCase().split(", ").indexOf(oldStream.toLowerCase()) == -1) {
-                                        // hideIframeButton.style.visibility = 'visible'
-                                        // dropsPageButton.style.visibility = 'visible'
-                                        // settingsButton.style.visibility = 'visible'   // EI TOIMI NÄÄ
-
-                                        insertIframe() //Lisätää iframe uudestaa
-                                    } 
-                                    
-                                    else {
-                                        ifrm.height = "0px"
-                                        // hideIframeButton.style.visibility = 'hidden';
-                                        // dropsPageButton.style.visibility = 'hidden';
-                                        // settingsButton.style.visibility = 'hidden';
-                                        clearTimeout(reloadTime)
-                                    }
-                                }
-                            }
-                        }
-        
-                        let gameNameDiv = document.querySelector("div.tw-align-items-center.tw-flex-wrap.tw-inline-flex.tw-mg-r-1 > a") //Pelin nimi div
-        
-                        if (gameNameDiv != null) { //Katotaa löytyykö divi
-                            if (gameNameDiv.innerText.length > 0) { //Jos löytyy katotaan onko siinä tekstiä
-                                currentGame = gameNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
-                            
-                                if (oldGame == undefined) { //Jos ei oo vielä oldStream
-                                    oldGame = currentGame //Lisätää nykyne striimi oldStreamii
-                                }
-                                if (currentGame == oldGame) { //Jos nykyne striimi sama kun vanha
-                                } else {
-                                    oldGame = currentGame //Jos on uus striimi, nii lisätään sen nimi oldStreamii
-                                    ifrm.style.visibility = "hidden" //Piilotetaa iframe
-                                }
-                            }
-                        }
-
-                        gameCheckTime += 1
-                        console.log(gameCheckTime)
-
-                        if(gameCheckTime > 20){
-                            clearInterval(urlCheck);
-                        }
-
-                    }, 500);
-
-                  }
-              });
+                    }
+                }
+            }, 2000);
 
         } else {
             console.log('%c !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ', 'background: #ff0000; color: #fff')
             console.log('%c Twitch Drops Manager is disabled in the settings ', 'background: #a970ff; color: #fff')
             console.log('%c !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ', 'background: #ff0000; color: #fff')
-
-            let aboutTime = 0
-
-            checkAbout = setInterval(function () {
-                if (aboutTime < 20) {
-
-                    if (document.getElementsByClassName("tw-align-middle tw-font-size-7 tw-inline-block tw-mg-b-05 tw-mg-r-0")[0]){
-
-                        settingsButtonFunc()
-                        settingsButton.style.marginLeft = "10px"
-                        settingsButton.style.margintop = "-15px"
-                        document.getElementsByClassName("tw-align-middle tw-font-size-7 tw-inline-block tw-mg-b-05 tw-mg-r-0")[0].append(settingsButton)
-                        clearInterval(checkAbout)
-
-                    }
-
-                } else {
-                    clearInterval(checkAbout)
-                }
-                console.log(aboutTime)
-                aboutTime += 1
-
-        }, 500)
-
         }
     }
 
