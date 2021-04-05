@@ -1,6 +1,6 @@
 (function () {
 
-    
+    /*
 
     //Asetukset variablet
     var refreshTime
@@ -48,8 +48,8 @@
         checkIframeDrops();
     }
 
+    let foundClaimableDrop = false
     let foundDrops = 0
-    let dropName = ""
 
     function takeDrops() {
 
@@ -59,22 +59,11 @@
 
             for (i = 0; i < availableDrops.length; i++) { //Chekkaa monta containerii on ja käy jokase läpi
 
-                if (availableDrops[i].querySelector('[data-test-selector]').classList.contains("tw-visible") == true){
-                    let dropID = availableDrops[i].querySelector("img").src
-                    console.log(dropID)
-                    dropID = dropID.split('BENEFIT-').pop().split('.')[0]
-                    console.log(dropID)
-                    console.log(dropID)
-                    console.log(dropID)
-                    console.log(dropID)
-
-                    if (hideDropList.split(", ").indexOf(dropID) == -1){
-                    
+                if (availableDrops[i].getElementsByClassName("tw-visible").length > 0) { //Monta droppia on containeri sisäl
                     availableDrops[i].style.margin = "0" //Muokataan dropin ulkonäköä          
                     availableDrops[i].style.marginRight = "15px"
                     availableDrops[i].style.height = "245px"
                     availableDrops[i].style.width = "160px" //160px
-                    availableDrops[i].id = dropID
                     let timeLeftDiv = availableDrops[i].querySelector("div.tw-align-center.tw-mg-t-05")
                     let timeLeft = timeLeftDiv.innerText
                     if (timeLeft.includes("hour") == true && timeLeft.includes("minute") == false) {
@@ -101,38 +90,12 @@
                             }
                         }
                     }
-                    else if (timeLeft.includes("hour") == false && timeLeft.includes("minute") == true) {
-
-                        console.log("TIMELEFT: " + timeLeft)
-                        let percentageDone = timeLeft.split('%')[0]
-                        console.log("PERCENTAGE DONE: " + percentageDone)
-                        let totalTimeMinutes = timeLeft.split('of ')[1]
-                        console.log("totalTimeMinutes: " + totalTimeMinutes)
-                        let totalTime = totalTimeMinutes.split(' ')[0];
-                        console.log("totalTime: " + totalTime)
-                        let percentNumber = (100 - parseInt(percentageDone)) / 100
-                        console.log("percentNumber: " + percentNumber)
-                        let timeNumber = parseInt(totalTime)
-                        console.log("timeNumber: " + timeNumber)
-
-                        let totalTimeLeft = Math.ceil(percentNumber * timeNumber)
-                        console.log("totalTimeLeft: " + totalTimeLeft)
-
-                        if (showTimeIn == true) {
-
-                            if (totalTimeLeft == 1) {
-                                timeLeftDiv.innerHTML = "1 min (99%)"
-                            } else {
-                                timeLeftDiv.innerHTML = totalTimeLeft + " min (" + percentageDone + "%)"
-                            } 
-                        }
-                    }
 
 
                     let link = availableDropsContainers[j].querySelector("div.tw-mg-x-1 > div > p > a") //ottaa linkin divin tiedot
 
                     link.style.textAlign = "center";
-                    dropName = availableDrops[i].getElementsByClassName("tw-font-size-5 tw-semibold")[0] //Otetaa dropName tekstin tiedot
+                    let dropName = availableDrops[i].getElementsByClassName("tw-font-size-5 tw-semibold")[0] //Otetaa dropName tekstin tiedot
                     link.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color") //Vaihetaan linkin väri dropNamen väriseks
                     link.style.paddingBottom = "5px"
 
@@ -161,9 +124,7 @@
                         gameURL = "CS:GO"
                     } else if (gameURL == "Fall Guys: Ultimate Knockout") {
                         gameURL = "Fall Guys"
-                    } else if (gameURL == "Don't Starve Together") {
-                        gameURL = "Don't Starve Together"
-                    }else if (gameURL.length > 20) {
+                    } else if (gameURL.length > 20) {
                         gameURL = gameURL.slice(0, 20)
                         gameURL = gameURL += "..."
                     }
@@ -178,57 +139,13 @@
 
                     availableDrops[i].prepend(link) //Lisätää linkki dropin yläpuolelle
                     availableDrops[i].style.cssFloat = "left"
-
-                    removeDropButton = document.createElement("BUTTON");
-                    var removeDropButtonText = document.createTextNode("X");
-                    removeDropButton.appendChild(removeDropButtonText);
-                    removeDropButton.style.outline = "none"
-                    removeDropButton.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color")
-                    removeDropButton.className = "removeDropButton"
-                    removeDropButton.style.backgroundColor = "transparent"
-                    removeDropButton.style.position = "absolute"
-                    removeDropButton.style.fontWeight = "900"
-                    removeDropButton.style.opacity = "0.3"
-                    removeDropButton.style.transform = "translate(65px, -45px)"
-                    removeDropButton.style.transition = "0.4s"  
-                    removeDropButton.style.boxShadow = "0px 0px 0px 500px rgba(255, 200, 200, 0)"
-
-
-                    removeDropButton.addEventListener("mouseover", function (event) {
-                        event.target.style.color = "#ff3333"
-                        event.target.style.opacity = "1"
-                        event.target.style.boxShadow = "0px 0px 0px 500px rgba(255, 30, 30, 0.5)"
-                        event.target.style.backgroundColor = "rgba(255, 30, 30, 0.5)"
-                    }, false);
-                
-                    removeDropButton.addEventListener("mouseout", function (event) {
-                        event.target.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color")
-                        event.target.style.opacity = "0.3"
-                        event.target.style.boxShadow = "0px 0px 0px 500px rgba(255, 200, 200, 0)"
-                        event.target.style.backgroundColor = "transparent"
-
-                    
-                    }, false);
-                
-                    removeDropButton.onclick = removeDropFunc
-                
-                    function removeDropFunc() {
-                        hideDropList += dropID + ", "
-                        console.log(hideDropList)
-                        ifrm.contentWindow.document.getElementById(dropID).remove()
-                    }
-                    availableDrops[i].querySelector("div.tw-align-items-center.tw-c-background-alt.tw-flex.tw-justify-content-center.tw-pd-2.tw-relative").append(removeDropButton)
-
-
                     scrollableContainer.appendChild(availableDrops[i]) //Lisätää koko juttu headerii
                     foundDrops += 1
-                }
 
                 } else { //Sama mutta jos on "Claim now" button
-                    if (availableDrops[i].querySelector("button") !== null) {
-                        if (availableDrops[i].querySelector("button").classList.contains("ScCoreButton-sc-1qn4ixc-0") == true){
-                         
-                            dropName = availableDrops[i].getElementsByClassName("tw-font-size-5 tw-semibold")[0] //Otetaa dropName tekstin tiedot
+                    if (availableDrops[i].getElementsByClassName("ScCoreButton-sc-1qn4ixc-0 ScCoreButtonPrimary-sc-1qn4ixc-1 hZEZfD tw-core-button").length > 0) {
+                        if (hideClaimableButton == false) { //Jos claimable drops ei oo laitettu pois asetuksista
+                            foundClaimableDrop = true
                             availableDrops[i].style.margin = "0"
                             availableDrops[i].style.marginRight = "15px"
                             availableDrops[i].style.height = "240px"
@@ -263,8 +180,6 @@
                                     gameURL = "CS:GO"
                                 } else if (gameURL == "Fall Guys: Ultimate Knockout") {
                                     gameURL = "Fall Guys"
-                                } else if (gameURL == "Don't Starve Together") {
-                                    gameURL = "Don't Starve Together"
                                 } else if (gameURL.length > 20) {
                                     gameURL = gameURL.slice(0, 20)
                                     gameURL = gameURL += "..."
@@ -284,49 +199,6 @@
                                 nullLink.style.marginBottom = "5px"
                                 availableDrops[i].prepend(nullLink)
                             }
-
-
-                            removeDropButton = document.createElement("BUTTON");
-                    var removeDropButtonText = document.createTextNode("X");
-                    removeDropButton.appendChild(removeDropButtonText);
-                    removeDropButton.style.outline = "none"
-                    removeDropButton.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color")
-                    removeDropButton.className = "removeDropButton"
-                    removeDropButton.style.backgroundColor = "transparent"
-                    removeDropButton.style.position = "absolute"
-                    removeDropButton.style.fontWeight = "900"
-                    removeDropButton.style.opacity = "0.3"
-                    removeDropButton.style.transform = "translate(65px, -45px)"
-                    removeDropButton.style.transition = "0.4s"  
-                    removeDropButton.style.boxShadow = "0px 0px 0px 500px rgba(255, 200, 200, 0)"
-
-
-                    removeDropButton.addEventListener("mouseover", function (event) {
-                        event.target.style.color = "#ff3333"
-                        event.target.style.opacity = "1"
-                        event.target.style.boxShadow = "0px 0px 0px 500px rgba(255, 30, 30, 0.5)"
-                        event.target.style.backgroundColor = "rgba(255, 30, 30, 0.5)"
-                    }, false);
-                
-                    removeDropButton.addEventListener("mouseout", function (event) {
-                        event.target.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color")
-                        event.target.style.opacity = "0.3"
-                        event.target.style.boxShadow = "0px 0px 0px 500px rgba(255, 200, 200, 0)"
-                        event.target.style.backgroundColor = "transparent"
-
-                    
-                    }, false);
-                
-                    removeDropButton.onclick = removeDropFunc
-                
-                    function removeDropFunc() {
-                        hideDropList += dropID + ", "
-                        console.log(hideDropList)
-                        ifrm.contentWindow.document.getElementById(dropID).remove()
-                    }
-                    availableDrops[i].querySelector("div.tw-align-items-center.tw-c-background-alt.tw-flex.tw-justify-content-center.tw-pd-2.tw-relative").append(removeDropButton)
-
-
 
                             availableDrops[i].style.cssFloat = "left"
                             scrollableContainer.prepend(availableDrops[i])
@@ -397,7 +269,7 @@
                 header.style.display = "none"
                 marginEdit.style.marginTop = "-30px"
                 scrollableContainer.style.visibility = "visible"
-                
+                foundClaimableDrop = false
                 takeDrops()
                 clearInterval(removeElements)
             } else {
@@ -502,8 +374,6 @@
     var hideIframeButton
     var dropsPageButton
     var settingsButton
-
-    var hideDropList = "" 
 
     function settingsButtonFunc(){
         settingsButton = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -798,5 +668,275 @@
 
         }
     }
+
+*/
+var ifrm = document.createElement('iframe')
+
+ifrm.setAttribute('src', 'https://www.twitch.tv/drops/inventory');
+ifrm.width = "100%"
+ifrm.height = "1000px" //1 row 270px, 2 row 530px, 3 row 810px
+document.querySelector("div.channel-root__info > div > div:nth-child(2)").prepend(ifrm)
+checkForDrops = setInterval(function () {
+    if (ifrm.contentWindow.document.getElementsByClassName("tw-border-radius-medium tw-c-background-base tw-elevation-1 tw-flex tw-flex-grow-0 tw-flex-row tw-mg-b-2").length > 0){
+        getDrops()
+        clearInterval(checkForDrops)
+    } else {
+
+    }
+}, 1000);
+
+var hideDropList = "" 
+
+function getDrops() {
+    //Ettii kaikki droppi containerit
+    let dropContainers = ifrm.contentWindow.document.getElementsByClassName("tw-border-radius-medium tw-c-background-base tw-elevation-1 tw-flex tw-flex-grow-0 tw-flex-row tw-mg-b-2") 
+
+    for (j = 0; j < dropContainers.length; j++) {
+        //Ettii kaikki dropit jokasen containerin sisältä yksitelle
+        let singleDrops = dropContainers[j].getElementsByClassName("tw-flex tw-flex-column tw-mg-t-2")
+
+            for (i = 0; i < singleDrops.length; i++) {
+                //Kattoo onko droppi  käynnissä TAI onko se claimattavissa
+                if (singleDrops[i].querySelector('[data-test-selector]').classList.contains("tw-visible") == true){
+                    //Kattoo ettei droppii oo poistettu käyttäjän puolesta
+                    let dropID = singleDrops[i].querySelector("img").src
+                    dropID = dropID.split('BENEFIT-').pop().split('.')[0]
+                    if (hideDropList.split(", ").indexOf(dropID) == -1){ //Käytetään dropin kuvaa sen ID:nä
+                        //Voidaan poistaa hide claimable drops asetuksista
+                        //Tästä jatkuu normaalil taval
+                        //Eli tehään droppi oikeen näköseks
+                        singleDrops[i].style.margin = "0" //Muokataan dropin ulkonäköä          
+                        singleDrops[i].style.marginRight = "15px"
+                        singleDrops[i].style.height = "245px"
+                        singleDrops[i].style.width = "160px" //160px
+                        singleDrops[i].id = dropID
+
+                        /////////////////////////////////////////TIMELEFT///////////////////////////////////////////////
+                        let timeLeftDiv = singleDrops[i].querySelector("div.tw-align-center.tw-mg-t-05")
+                        let timeLeft = timeLeftDiv.innerText
+                        if (timeLeft.includes("hour") == true && timeLeft.includes("minute") == false) {
+                            let percentageDone = timeLeft.split('%')[0]
+                            let totalTimeWithHours = timeLeft.split('of ')[1]
+                            let totalTime = totalTimeWithHours.split(' ')[0];
+                            let percentNumber = (100 - parseInt(percentageDone)) / 100
+                            let timeNumber = parseInt(totalTime) * 60
+    
+                            let totalTimeLeft = Math.ceil(percentNumber * timeNumber)
+    
+                                if (totalTimeLeft == 1) {
+                                    timeLeftDiv.innerHTML = "1 min (99%)"
+                                } else if (totalTimeLeft > 1 && totalTimeLeft < 60) {
+                                    timeLeftDiv.innerHTML = totalTimeLeft + " min (" + percentageDone + "%)"
+                                } else if (totalTimeLeft >= 60) {
+                                    let getHours = Math.trunc(totalTimeLeft / 60)
+                                    let getMinutes = totalTimeLeft % 60
+                                    timeLeftDiv.innerHTML = getHours + "h " + getMinutes + "min (" + percentageDone + "%)"
+                                }
+
+                        }
+                        ////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    
+                        let link = dropContainers[j].querySelector("div.tw-mg-x-1 > div > p > a") //ottaa linkin divin tiedot
+    
+                        link.style.textAlign = "center";
+                        let dropName = singleDrops[i].getElementsByClassName("tw-font-size-5 tw-semibold")[0] //Otetaa dropName tekstin tiedot
+                        link.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color") //Vaihetaan linkin väri dropNamen väriseks
+                        link.style.paddingBottom = "5px"
+    
+                        //let test = "https://www.twitch.tv/directory/game/The%20Elder%20Scrolls%20V%3A%20Skyrim?"
+    
+                        let gameURL = link.href.split('game/').pop().split('?')[0] //Otetaa pelin linkki jos ei oo striimeri link.href.
+    
+                        gameURL = gameURL.split('%20').join(' ')
+                        gameURL = gameURL.split('%3A').join(':')
+                        gameURL = gameURL.split('%26').join('&')
+                        gameURL = gameURL.split('%7C').join('|')
+    
+                        if (gameURL == "Tom Clancy's Rainbow Six Siege") {
+                            gameURL = "Rainbow Six Siege"
+                        } else if (gameURL == "Call of Duty: Black Ops Cold War") {
+                            gameURL = "Black Ops Cold War"
+                        } else if (gameURL == "Call of Duty: Warzone") {
+                            gameURL = "Call of Duty: Warzone"
+                        } else if (gameURL == "Call Of Duty: Modern Warfare") {
+                            gameURL = "Modern Warfare"
+                        } else if (gameURL == "PLAYERUNKNOWN'S BATTLEGROUNDS") {
+                            gameURL = "PUBG"
+                        } else if (gameURL == "Monster Hunter: World") {
+                            gameURL = "Monster Hunter: World"
+                        } else if (gameURL == "Counter-Strike: Global Offensive") {
+                            gameURL = "CS:GO"
+                        } else if (gameURL == "Fall Guys: Ultimate Knockout") {
+                            gameURL = "Fall Guys"
+                        } else if (gameURL.length > 20) {
+                            gameURL = gameURL.slice(0, 20)
+                            gameURL = gameURL += "..."
+                        }
+    
+                        if (link.innerHTML == "a participating live channel") {
+                            if (gameURL.length > 0) {
+                                link.innerHTML = gameURL //Muutetaa teksti pelin nimeks
+                            } else {
+                                link.innerHTML = "‎" //Jos ei löytyny linkkiä jätetää teksti tyhjäks
+                            }
+                        }
+    
+                        singleDrops[i].prepend(link) //Lisätää linkki dropin yläpuolelle
+                        singleDrops[i].style.float = "left" //Tähä ehkä cssFloat???
+
+
+
+        removeDropButton = document.createElement("BUTTON");
+        var removeDropButtonText = document.createTextNode("X");
+        removeDropButton.appendChild(removeDropButtonText);
+        removeDropButton.style.color = "#FFFFFF"
+        removeDropButton.className = "removeDropButton"
+        removeDropButton.style.position = "absolute"
+
+        removeDropButton.style.transform = "translate(50px, -50px)"
+        removeDropButton.style.transition = "0.4s"
+        
+
+        removeDropButton.addEventListener("mouseover", function (event) {
+            event.target.style.color = "#ec4646"
+
+            //Tähä koko droppi menee punaseks
+        }, false);
+
+        removeDropButton.addEventListener("mouseout", function (event) {
+            event.target.style.color = "#FFFFFF"
+
+        }, false);
+
+        removeDropButton.onclick = removeDropFunc
+
+        function removeDropFunc() {
+            hideDropList += dropID + ", "
+            console.log(hideDropList)
+            ifrm.contentWindow.document.getElementById(dropID).remove()
+        }
+        singleDrops[i].querySelector("div.tw-align-items-center.tw-c-background-alt.tw-flex.tw-justify-content-center.tw-pd-2.tw-relative").append(removeDropButton)
+
+
+
+                        ifrm.contentWindow.document.querySelector("#twilight-sticky-header-root > div > div.title-bar.tw-flex.tw-pd-b-1").appendChild(singleDrops[i]) //Lisätää koko juttu headerii
+                    }
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                else if (singleDrops[i].querySelector("button") !== null){
+                    if (singleDrops[i].querySelector("button").classList.contains("ScCoreButton-sc-1qn4ixc-0") == true){
+                    console.log("CLAIMABLE")
+                    singleDrops[i].style.margin = "0" //Muokataan dropin ulkonäköä          
+                        singleDrops[i].style.marginRight = "15px"
+                        singleDrops[i].style.height = "245px"
+                        singleDrops[i].style.width = "160px" //160px
+
+                        /////////////////////////////////////////TIMELEFT///////////////////////////////////////////////
+                        let timeLeftDiv = singleDrops[i].querySelector("div.tw-align-center.tw-mg-t-05")
+                        let timeLeft = timeLeftDiv.innerText
+                        if (timeLeft.includes("hour") == true && timeLeft.includes("minute") == false) {
+                            let percentageDone = timeLeft.split('%')[0]
+                            let totalTimeWithHours = timeLeft.split('of ')[1]
+                            let totalTime = totalTimeWithHours.split(' ')[0];
+                            let percentNumber = (100 - parseInt(percentageDone)) / 100
+                            let timeNumber = parseInt(totalTime) * 60
+    
+                            let totalTimeLeft = Math.ceil(percentNumber * timeNumber)
+    
+                                if (totalTimeLeft == 1) {
+                                    timeLeftDiv.innerHTML = "1 min (99%)"
+                                } else if (totalTimeLeft > 1 && totalTimeLeft < 60) {
+                                    timeLeftDiv.innerHTML = totalTimeLeft + " min (" + percentageDone + "%)"
+                                } else if (totalTimeLeft >= 60) {
+                                    let getHours = Math.trunc(totalTimeLeft / 60)
+                                    let getMinutes = totalTimeLeft % 60
+                                    timeLeftDiv.innerHTML = getHours + "h " + getMinutes + "min (" + percentageDone + "%)"
+                                }
+
+                        }
+                        ////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    
+                        let link = dropContainers[j].querySelector("div.tw-mg-x-1 > div > p > a") //ottaa linkin divin tiedot
+    
+                        link.style.textAlign = "center";
+                        let dropName = singleDrops[i].getElementsByClassName("tw-font-size-5 tw-semibold")[0] //Otetaa dropName tekstin tiedot
+                        link.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color") //Vaihetaan linkin väri dropNamen väriseks
+                        link.style.paddingBottom = "5px"
+    
+                        //let test = "https://www.twitch.tv/directory/game/The%20Elder%20Scrolls%20V%3A%20Skyrim?"
+    
+                        let gameURL = link.href.split('game/').pop().split('?')[0] //Otetaa pelin linkki jos ei oo striimeri link.href.
+    
+                        gameURL = gameURL.split('%20').join(' ')
+                        gameURL = gameURL.split('%3A').join(':')
+                        gameURL = gameURL.split('%26').join('&')
+                        gameURL = gameURL.split('%7C').join('|')
+    
+                        if (gameURL == "Tom Clancy's Rainbow Six Siege") {
+                            gameURL = "Rainbow Six Siege"
+                        } else if (gameURL == "Call of Duty: Black Ops Cold War") {
+                            gameURL = "Black Ops Cold War"
+                        } else if (gameURL == "Call of Duty: Warzone") {
+                            gameURL = "Call of Duty: Warzone"
+                        } else if (gameURL == "Call Of Duty: Modern Warfare") {
+                            gameURL = "Modern Warfare"
+                        } else if (gameURL == "PLAYERUNKNOWN'S BATTLEGROUNDS") {
+                            gameURL = "PUBG"
+                        } else if (gameURL == "Monster Hunter: World") {
+                            gameURL = "Monster Hunter: World"
+                        } else if (gameURL == "Counter-Strike: Global Offensive") {
+                            gameURL = "CS:GO"
+                        } else if (gameURL == "Fall Guys: Ultimate Knockout") {
+                            gameURL = "Fall Guys"
+                        } else if (gameURL.length > 20) {
+                            gameURL = gameURL.slice(0, 20)
+                            gameURL = gameURL += "..."
+                        }
+    
+                        if (link.innerHTML == "a participating live channel") {
+                            if (gameURL.length > 0) {
+                                link.innerHTML = gameURL //Muutetaa teksti pelin nimeks
+                            } else {
+                                link.innerHTML = "‎" //Jos ei löytyny linkkiä jätetää teksti tyhjäks
+                            }
+                        }
+    
+                        singleDrops[i].prepend(link) //Lisätää linkki dropin yläpuolelle
+                        singleDrops[i].style.float = "left"
+                        ifrm.contentWindow.document.querySelector("#twilight-sticky-header-root > div > div.title-bar.tw-flex.tw-pd-b-1").appendChild(singleDrops[i]) //Lisätää koko juttu headerii
+                }
+                }
+                else {
+                    console.log("EI MITÄÄ")
+                }
+
+            }
+
+    }
+
+}
+
 
 })();
