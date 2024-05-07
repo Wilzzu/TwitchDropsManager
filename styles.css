@@ -1,16 +1,26 @@
 #bodySettings {
 	font-size: 12px;
 	text-align: left;
-    height: 100%;
+	height: 100%;
 	color: white;
-    background-color: #202124;
+	background-color: #202124;
 }
 
 #h1Settings {
 	text-align: center;
-    font-weight: 600;
+	font-weight: 600;
 	margin-bottom: 30px;
 	margin-top: 30px;
+	margin-left: -65px;
+}
+
+#logo {
+	width: 50px;
+	height: 50px;
+	margin-left: 15px;
+	position: absolute;
+	display: inline-block;
+	top: 25px;
 }
 
 .settingsWrapper {
@@ -26,22 +36,35 @@
 	border-radius: 15px;
 	background-color: #37373b;
 	box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
-  }
-
+}
 
 .h2Settings {
-    font-weight: 400;
-	margin-bottom: 14px;
+	font-weight: 400;
+	margin-bottom: 30px;
+	margin-left: 20px;
+}
+
+.h2SettingsSort {
+	font-weight: 400;
+	margin-top: 84px;
+	margin-bottom: 30px;
 	margin-left: 20px;
 }
 
 .h2SettingsCheckbox {
-    font-weight: 400;
+	font-weight: 400;
 	margin-bottom: 30px;
 	margin-left: 20px;
 }
+
+.h2SettingsCheckboxDisable {
+	font-weight: 400;
+	margin-bottom: 25px;
+	margin-left: 20px;
+}
+
 .h2SettingsTime {
-    font-weight: 400;
+	font-weight: 400;
 	margin-top: 84px;
 	margin-bottom: 30px;
 	margin-left: 20px;
@@ -55,61 +78,69 @@
 }
 
 .h2SettingsRefresh {
-    font-weight: 400;
+	font-weight: 400;
 	margin-bottom: 30px;
 	margin-left: 20px;
 	float: left;
 }
 
 #hideChannels {
-    outline: none;
-    color: white;
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid #f5f5f5;
+	outline: none;
+	color: white;
+	background: transparent;
+	border: none;
+	border-bottom: 2px solid #f5f5f5;
 }
 
 #numberRefresh {
-    outline: none;
-    color: white;
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid #f5f5f5;
+	outline: none;
+	color: white;
+	background: transparent;
+	border: none;
+	border-bottom: 2px solid #f5f5f5;
 	width: 35px;
 }
 
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button {  
-	background: transparent url('https://i.imgur.com/S2FAdLe.png') no-repeat 50% 50%;  
-   opacity: 1;
-   height: 14px;
-   padding: 2px;
-   position: relative;
-   border-radius: 28px;
-   -webkit-appearance: none;
-   cursor:pointer;
-   display:block;
-   width:8px;
-   color: #333;
-   text-align:center;
-
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+	background: transparent url("https://i.imgur.com/S2FAdLe.png") no-repeat 50% 50%;
+	opacity: 1;
+	height: 14px;
+	padding: 2px;
+	position: relative;
+	border-radius: 28px;
+	-webkit-appearance: none;
+	cursor: pointer;
+	display: block;
+	width: 8px;
+	color: #333;
+	text-align: center;
 }
 
 #saveSettings {
 	margin-left: 20px;
-    background: white;
-    padding: 10px 10px;
-    font-weight: 700;
-    width: 150px;
-    border: none;
-    text-align: center;
-    font-size: 16px;
-    outline: none;
-    border-radius: 4px;
-    transition-duration: 0.3s;
+	background: white;
+	padding: 10px 10px;
+	font-weight: 700;
+	width: 150px;
+	border: none;
+	text-align: center;
+	font-size: 16px;
+	outline: none;
+	border-radius: 4px;
+	transition-duration: 0.3s;
 }
 
-#resetSettings{
+#saveSettings:hover {
+	box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.15), 0 17px 50px 0 rgba(0, 0, 0, 0.09);
+	background: #7ae582;
+	color: white;
+	cursor: pointer;
+	text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.4), 0px 4px 13px rgba(0, 0, 0, 0.1),
+		0px 6px 23px rgba(0, 0, 0, 0.1);
+}
+
+#resetSettings {
 	background: transparent;
 	color: white;
 	text-decoration: underline;
@@ -118,47 +149,86 @@ input[type=number]::-webkit-outer-spin-button {
 	outline: none;
 }
 
-#saveSettings:hover {
-    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
-    background: #7AE582;
-    color: white;
-	cursor: pointer;
-	text-shadow: 0px 2px 3px rgba(0,0,0,0.4),
-             0px 4px 13px rgba(0,0,0,0.1),
-             0px 6px 23px rgba(0,0,0,0.1);
-}
-
 #resetSettings:hover {
-    color: #ec4646;
+	color: #ec4646;
 	cursor: pointer;
 	outline: none;
 }
 
 #status {
 	margin-top: 5px;
-    color: rgb(0, 255, 115);
+	color: rgb(0, 255, 115);
 	transition: 0.5s;
 	opacity: 0;
 	outline: none;
 	margin-left: 20px;
 }
 
+#resetDrops {
+	margin-left: 20px;
+	margin-bottom: 0px;
+	background: none;
+	padding: 10px 2px;
+	font-weight: 400;
+	width: 200px;
+	border: 1px solid #ec4646;
+	color: white;
+	text-align: center;
+	font-size: 16px;
+	outline: none;
+	border-radius: 4px;
+	transition-duration: 0.3s;
+}
+
+#resetDrops:hover {
+	box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.1), 0 17px 50px 0 rgba(0, 0, 0, 0.05);
+	background: #ec4646;
+	cursor: pointer;
+	text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.4), 0px 4px 13px rgba(0, 0, 0, 0.1),
+		0px 6px 23px rgba(0, 0, 0, 0.1);
+}
+
+#dropsStatus {
+	float: right;
+	margin-top: 12px;
+	margin-right: 130px;
+	color: rgb(0, 255, 115);
+	transition: 0.5s;
+	opacity: 0;
+}
+
+#status:hover,
+#dropsStatus:hover {
+	cursor: default;
+}
+
+#minuteAmount {
+	margin-right: 110px;
+}
+
+.line {
+	border-bottom: 2px solid white;
+	opacity: 0.1;
+	margin-top: 20px;
+	margin-bottom: 30px;
+}
+
 input:focus::placeholder {
 	color: transparent;
-  }
+}
 
 ::placeholder {
-    color: rgb(160, 160, 160);
-    opacity: 1;
+	color: rgb(160, 160, 160);
+	opacity: 1;
 }
-  
-input[type=checkbox]{
+
+input[type="checkbox"] {
 	height: 0;
 	width: 0;
 	visibility: hidden;
 }
 
-label {
+input[type="checkbox"] + label {
 	margin-right: 20px;
 	cursor: pointer;
 	text-indent: -9999px;
@@ -169,10 +239,11 @@ label {
 	border-radius: 100px;
 	position: relative;
 	float: right;
+	transition: 0.4s;
 }
 
-label:after {
-	content: '';
+input[type="checkbox"] + label:after {
+	content: "";
 	position: absolute;
 	top: 5px;
 	left: 5px;
@@ -183,16 +254,15 @@ label:after {
 	transition: 0.4s;
 }
 
-input:checked + label {
-	background: #7AE582;
+input[type="checkbox"]:checked + label {
+	background: #7ae582;
 	transition: 0.4s;
 }
+
 input:checked + label[for="disableTDM"] {
 	background: #ec4646;
 	transition: 0.4s;
 }
-
-
 
 input:checked + label:after {
 	left: calc(100% - 5px);
@@ -203,25 +273,73 @@ label:active:after {
 	width: 20px;
 }
 
-  @media screen and (-webkit-min-device-pixel-ratio:0) {
-    input[type='range'] {
-      overflow: hidden;
-      width: 100px;
-      -webkit-appearance: none;
-      background-color: grey;
-	  border-radius: 25px;
-	  height: 20px;
-	  outline: none;
-    }
-    
-    input[type='range']::-webkit-slider-thumb {
-      width: 20px;
-      -webkit-appearance: none;
-      height: 20px;
-      cursor: pointer;
-      background: white;
-      box-shadow: -90px 0px 0px 80px #32a4f5;
-	  border-radius: 90px;
-    }
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+	input[type="range"] {
+		overflow: hidden;
+		width: 100px;
+		-webkit-appearance: none;
+		background-color: grey;
+		border-radius: 25px;
+		height: 20px;
+		outline: none;
+	}
 
+	input[type="range"]::-webkit-slider-thumb {
+		width: 20px;
+		-webkit-appearance: none;
+		height: 20px;
+		cursor: pointer;
+		background: white;
+		box-shadow: -90px 0px 0px 80px #32a4f5;
+		border-radius: 90px;
+	}
+}
+
+.tooltip {
+	position: relative;
+	display: inline-block;
+	border-radius: 50%;
+	border: 1px solid rgb(189, 189, 189);
+	height: 12px;
+	width: 12px;
+	top: -12px;
+	font-size: 8px;
+	left: -9px;
+	text-align: center;
+	color: white;
+}
+
+.tooltip .tooltiptext {
+	visibility: hidden;
+	width: 180px;
+	background-color: rgb(44, 44, 44);
+	color: #fff;
+	text-align: center;
+	border-radius: 6px;
+	padding: 5px 0;
+	position: absolute;
+	z-index: 1;
+	bottom: 150%;
+	left: 50%;
+	margin-left: -95px;
+	font-size: 15px;
+	padding: 10px;
+
+	/* Fade in tooltip - takes 1 second to go from 0% to 100% opac: */
+	opacity: 0;
+	transition: opacity 0.4s;
+}
+
+.tooltiptext {
+	display: inline-block;
+}
+
+.tooltip:hover .tooltiptext {
+	visibility: visible;
+	opacity: 1;
+	cursor: default;
+}
+
+.tooltip:hover {
+	cursor: pointer;
 }

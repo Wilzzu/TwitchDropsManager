@@ -1,866 +1,670 @@
 (function () {
-
-    
-
-    //Asetukset variablet
     var refreshTime
     var disableTDM
-    // var specificChannel
-    var hideClaimableButton
-    var showHintText
+    var extendSearch
+    //var showHintText
     var showTimeIn
     var hideButtonsDefault
-    var hideChannelsList
+    //var hideChannelsList
+    var hiddenDrops
+    var autoClaimValue
 
     //Haetaan asetukset
     chrome.storage.sync.get({
         refreshTime: 1,
         refreshRange: 1,
         disableTDM: false,
-        // specificDrops: false,
-        hideClaimable: false,
-        hintText: true,
+        extendSearchTime: false,
+        //hintText: true,
         showTime: true,
+        autoClaim: true,
         hideButtons: false,
-        hideChannels: ""
+        //hideChannels: "",
+        hideDropsList: []
     }, function (items) {
         refreshTime = items.refreshTime;
         disableTDM = items.disableTDM;
-        // specificChannel = items.specificDrops;
-        hideClaimableButton = items.hideClaimable;
-        showHintText = items.hintText;
+        extendSearch = items.extendSearchTime;
+        autoClaimValue = items.autoClaim;
+        //showHintText = items.hintText;
         showTimeIn = items.showTime;
         hideButtonsDefault = items.hideButtons;
-        hideChannelsList = items.hideChannels;
+        //hideChannelsList = items.hideChannels;
+        hiddenDrops = items.hideDropsList;
     });
 
     let getOptions = setInterval(function () {
-        if (refreshTime != undefined) { //katotaa onko asetukset ladannu
+        if (refreshTime != undefined && disableTDM == false) { //katotaa onko asetukset ladannu
             refreshTime = refreshTime * 60000 //Muunnetaan minuuteiksi
+
+            let settingsCount = 0
+            let addSettings = setInterval(() => {
+                if (document.querySelector(".sc-AxjAm.jRwVsy")) {
+                    let settingsDiv = document.querySelector(".sc-AxjAm.jRwVsy")
+                    let settingsButton = document.createElement("div")
+                    let settingsButtonSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    settingsButtonSVG.setAttribute("aria-hidden", "true");
+                    settingsButtonSVG.setAttribute('viewBox', '0 0 180.24 188.4');
+                    settingsButtonSVG.setAttribute('width', '18px');
+                    settingsButtonSVG.setAttribute('height', '18px');
+                    settingsButtonSVG.setAttribute('position', 'relative');
+                    settingsButtonSVG.setAttribute('float', 'left');
+
+                    var path = document.createElementNS("http://www.w3.org/2000/svg", 'path');
+                    path.setAttribute('d', "M180.24,0c0,38.32,0,76.64,0,114.96c-12.4,12.32-24.8,24.64-37.2,36.96c-3.84,3.92-7.68,7.84-11.52,11.76c-1.73,0.94-6.13,0.24-8.4,0.24c-6.88,0-13.76,0-20.64,0c-2.21,0-7.32-0.39-7.92,0c-2.25,0.82-4.14,3.9-5.76,5.52c-4.48,4.4-8.96,8.8-13.44,13.2c-1.84,1.92-3.68,3.84-5.52,5.76c-8.24,0-16.48,0-24.72,0c0-8.24,0-16.48,0-24.72c-0.08,0-0.16,0-0.24,0c-1.41,0.81-9.53,0.24-12.48,0.24c-10.64,0-21.28,0-31.92,0c-1.06-3.22-0.24-8.74-0.24-12.48c0-9.2,0-18.4,0-27.6c0-30.48,0-60.96,0-91.44C4.32,21.6,8.4,10.8,12.48,0C68.39,0,124.33,0,180.24,0L180.24,0z M28.8,16.56c0,10.32,0,20.64,0,30.96c3.09,1.02,11.67,0.24,15.6,0.24c11.52,0,23.04,0,34.56,0c-0.09,7.18-0.5,14.08,3.6,17.04c4.21,3.04,14.08,1.92,21.12,1.92c3.84,0,7.18-0.03,9.6-1.44c4.68-2.73,4.17-9.98,4.08-17.52c15.44,0,30.88,0,46.32,0c0.83-2.51,0.24-6.85,0.24-9.84c0-7.12,0-14.24,0-21.36C118.88,16.56,73.84,16.56,28.8,16.56L28.8,16.56z M28.8,66.72c0,22.72,0,45.44,0,68.16c2.96,0.98,8.06,0.24,11.52,0.24c8.48,0,16.96,0,25.44,0c0,8.08,0,16.16,0,24.24c0.08,0,0.16,0,0.24,0c8-8.08,16-16.16,24-24.24c15.12,0,30.24,0,45.36,0c1.11-1.67,2.92-2.92,4.32-4.32c3.28-3.28,6.56-6.56,9.84-9.84c3.36-3.36,6.72-6.72,10.08-10.08c1.4-1.4,2.65-3.21,4.32-4.32c0-13.28,0-26.56,0-39.84c-6.32,0-12.64,0-18.96,0c-3.26,0-7.22-0.31-10.08,0.24c-0.56,3.76-3.39,6.38-5.28,8.88c-6.67,8.84-16.13,10.32-31.68,10.32c-9.28,0-17.54-0.11-23.28-3.6c-3.73-2.27-7.44-5.28-9.84-8.88c-0.58-0.88-3.16-6.72-3.6-6.96C50.4,66.72,39.6,66.72,28.8,66.72L28.8,66.72z");
+                    path.setAttribute('fill', '#9B67E9');
+
+                    settingsButtonSVG.appendChild(path);
+                    settingsButton.append(settingsButtonSVG)
+
+                    settingsButton.style.marginRight = "10px"
+                    settingsButton.style.marginTop = "3px"
+
+                    //settingsButton.style.marginBottom = "-4px"
+                    //settingsButton.style.color = "#9B67E9"
+
+                    let clickSettings = document.createElement("div")
+                        clickSettings.style.width = "18px"
+                        clickSettings.style.height = "18px"
+                        clickSettings.style.position = "absolute"
+                        settingsButton.prepend(clickSettings)
+
+                    settingsButton.addEventListener("mouseover", function (event) {
+                        event.target.style.cursor = "pointer";
+                    }, false);
+
+                    settingsButton.addEventListener("mouseout", function (event) {
+                        event.target.style.cursor = "default";
+                    }, false);
+
+                    settingsButton.onclick = openSettings
+
+                    function openSettings() {
+                        chrome.runtime.sendMessage({
+                                message: 'buttonClicked'
+                            },
+                            function () {})
+                    }
+                    settingsDiv.prepend(settingsButton)
+                    clearInterval(addSettings)
+                } else if (settingsCount > 500) {
+                    clearInterval(addSettings)
+                } else {
+                    settingsCount += 1
+                }
+            }, 100);
+
             start()
-            clearInterval(getOptions); //Lopetetaa toisto
+            clearInterval(getOptions)
+        } else if (disableTDM == true) {
+            console.log('%c !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ', 'background: #ff0000; color: #fff')
+            console.log('%c Twitch Drops Manager is disabled from the settings ', 'background: #a970ff; color: #fff')
+            console.log('%c !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ', 'background: #ff0000; color: #fff')
+            clearInterval(getOptions)
         }
     }, 100);
 
-    function reloadIframe() { //Päivitetää minuuti välein
-        ifrm.style.visibility = "hidden"
-        ifrm.contentWindow.location.reload();
-        checkIframeDrops();
-    }
+    function start() {
+        console.log("STARTED")
+        let loadingImg = undefined
+        let buttonsDiv = undefined
+        let iframe = undefined
+        let containerDiv = undefined
+        let hideDropsButton = undefined
+        let reloadButton = undefined
+        let aboutContainer = undefined
+        let dropContainer = undefined
+        let dropElement = undefined
+        let dropChannelName = "⁣"
+        let removeDropsButton = undefined
+        let dropsPageButton = undefined
+        let dropLink = undefined
+        let foundIDs = []
+        let errorMessage = undefined
+        let errorText = "An error occurred.  " + "<a href='javascript:void(0)' style='color: red'><u>REFRESH</u></a>"
+        let noDrops = false
+        let dropsShown = undefined
 
-    let foundDrops = 0
-    let dropName = ""
-    let lastGame = ""
-    let lastGameLink = ""
-    let lastColor = "white"
+        checkForAbout()
 
-    function takeDrops() {
-
-        for (j = 0; j < availableDropsContainers.length; j++) {
-
-            let availableDrops = availableDropsContainers[j].getElementsByClassName("tw-flex tw-flex-column tw-mg-t-2")
-
-            for (i = 0; i < availableDrops.length; i++) { //Chekkaa monta containerii on ja käy jokase läpi
-
-                if (availableDrops[i].querySelector('[data-test-selector]').classList.contains("tw-visible") == true){
-                    let dropID = availableDrops[i].querySelector("img").src
-                    console.log(dropID)
-                    dropID = dropID.split('BENEFIT-').pop().split('.')[0]
-                    console.log(dropID)
-                    console.log(dropID)
-                    console.log(dropID)
-                    console.log(dropID)
-
-                    if (hideDropList.split(", ").indexOf(dropID) == -1){
-                    
-                    availableDrops[i].style.margin = "0" //Muokataan dropin ulkonäköä          
-                    availableDrops[i].style.marginRight = "15px"
-                    availableDrops[i].style.height = "245px"
-                    availableDrops[i].style.width = "160px" //160px
-                    availableDrops[i].id = dropID
-                    let timeLeftDiv = availableDrops[i].querySelector("div.tw-align-center.tw-mg-t-05")
-                    let timeLeft = timeLeftDiv.innerText
-                    if (timeLeft.includes("hour") == true && timeLeft.includes("minute") == true) { //TEE LOPPUUN
-
-                        let percentageDone = timeLeft.split('%')[0]
-                        let totalTimeWithHours = timeLeft.split('of ')[1]
-                        let totalTime = totalTimeWithHours.split(' ')[0];
-                        let percentNumber = (100 - parseInt(percentageDone)) / 100
-                        let timeNumber = parseInt(totalTime) * 60
-
-                        let totalTimeLeft = Math.ceil(percentNumber * timeNumber)
-
-                        if (showTimeIn == true) {
-
-                            if (totalTimeLeft == 1) {
-                                timeLeftDiv.innerHTML = "1 min (99%)"
-                            } else if (totalTimeLeft > 1 && totalTimeLeft < 60) {
-                                timeLeftDiv.innerHTML = totalTimeLeft + " min (" + percentageDone + "%)"
-                            } else if (totalTimeLeft >= 60) {
-                                let getHours = Math.trunc(totalTimeLeft / 60)
-                                let getMinutes = totalTimeLeft % 60
-
-                                timeLeftDiv.innerHTML = getHours + "h " + getMinutes + "min (" + percentageDone + "%)"
-                            }
-                        }
-                    }
-                    else if (timeLeft.includes("hour") == true && timeLeft.includes("minute") == false) {
-
-                        let percentageDone = timeLeft.split('%')[0]
-                        let totalTimeWithHours = timeLeft.split('of ')[1]
-                        let totalTime = totalTimeWithHours.split(' ')[0];
-                        let percentNumber = (100 - parseInt(percentageDone)) / 100
-                        let timeNumber = parseInt(totalTime) * 60
-
-                        let totalTimeLeft = Math.ceil(percentNumber * timeNumber)
-
-                        if (showTimeIn == true) {
-
-                            if (totalTimeLeft == 1) {
-                                timeLeftDiv.innerHTML = "1 min (99%)"
-                            } else if (totalTimeLeft > 1 && totalTimeLeft < 60) {
-                                timeLeftDiv.innerHTML = totalTimeLeft + " min (" + percentageDone + "%)"
-                            } else if (totalTimeLeft >= 60) {
-                                let getHours = Math.trunc(totalTimeLeft / 60)
-                                let getMinutes = totalTimeLeft % 60
-
-                                timeLeftDiv.innerHTML = getHours + "h " + getMinutes + "min (" + percentageDone + "%)"
-                            }
-                        }
-                    }
-                    else if (timeLeft.includes("hour") == false && timeLeft.includes("minute") == true) {
-
-                        console.log("TIMELEFT: " + timeLeft)
-                        let percentageDone = timeLeft.split('%')[0]
-                        console.log("PERCENTAGE DONE: " + percentageDone)
-                        let totalTimeMinutes = timeLeft.split('of ')[1]
-                        console.log("totalTimeMinutes: " + totalTimeMinutes)
-                        let totalTime = totalTimeMinutes.split(' ')[0];
-                        console.log("totalTime: " + totalTime)
-                        let percentNumber = (100 - parseInt(percentageDone)) / 100
-                        console.log("percentNumber: " + percentNumber)
-                        let timeNumber = parseInt(totalTime)
-                        console.log("timeNumber: " + timeNumber)
-
-                        let totalTimeLeft = Math.ceil(percentNumber * timeNumber)
-                        console.log("totalTimeLeft: " + totalTimeLeft)
-
-                        if (showTimeIn == true) {
-
-                            if (totalTimeLeft == 1) {
-                                timeLeftDiv.innerHTML = "1 min (99%)"
-                            } else {
-                                timeLeftDiv.innerHTML = totalTimeLeft + " min (" + percentageDone + "%)"
-                            } 
-                        }
-                    }
-
-
-                    let link = availableDropsContainers[j].querySelector("div.tw-mg-x-1 > div > p > a") //ottaa linkin divin tiedot
-                    if (link != null){
-                        
-                    link.style.textAlign = "center";
-                    dropName = availableDrops[i].getElementsByClassName("tw-font-size-5 tw-semibold")[0] //Otetaa dropName tekstin tiedot
-                    link.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color") //Vaihetaan linkin väri dropNamen väriseks
-                    link.style.paddingBottom = "5px"
-
-                    lastGameLink = link.href
-                    lastColor = link.style.color
-
-                    //let test = "https://www.twitch.tv/directory/game/The%20Elder%20Scrolls%20V%3A%20Skyrim?"
-
-                    let gameURL = link.href.split('game/').pop().split('?')[0] //Otetaa pelin linkki jos ei oo striimeri link.href.
-
-                    gameURL = gameURL.split('%20').join(' ')
-                    gameURL = gameURL.split('%3A').join(':')
-                    gameURL = gameURL.split('%26').join('&')
-                    gameURL = gameURL.split('%7C').join('|')
-
-                    if (gameURL == "Tom Clancy's Rainbow Six Siege") {
-                        gameURL = "Rainbow Six Siege"
-                    } else if (gameURL == "Call of Duty: Black Ops Cold War") {
-                        gameURL = "Black Ops Cold War"
-                    } else if (gameURL == "Call of Duty: Warzone") {
-                        gameURL = "Call of Duty: Warzone"
-                    } else if (gameURL == "Call Of Duty: Modern Warfare") {
-                        gameURL = "Modern Warfare"
-                    } else if (gameURL == "PLAYERUNKNOWN'S BATTLEGROUNDS") {
-                        gameURL = "PUBG"
-                    } else if (gameURL == "Monster Hunter: World") {
-                        gameURL = "Monster Hunter: World"
-                    } else if (gameURL == "Counter-Strike: Global Offensive") {
-                        gameURL = "CS:GO"
-                    } else if (gameURL == "Fall Guys: Ultimate Knockout") {
-                        gameURL = "Fall Guys"
-                    } else if (gameURL == "Don't Starve Together") {
-                        gameURL = "Don't Starve Together"
-                    }else if (gameURL.length > 20) {
-                        gameURL = gameURL.slice(0, 20)
-                        gameURL = gameURL += "..."
-                    }
-
-                    if (link.innerHTML == "a participating live channel") {
-                        if (gameURL.length > 0) {
-                            link.innerHTML = gameURL //Muutetaa teksti pelin nimeks
-                            lastGame = gameURL
-                        } else {
-                            link.innerHTML = "‎" //Jos ei löytyny linkkiä jätetää teksti tyhjäks
-                        }
-                    }
-
-                    availableDrops[i].prepend(link) //Lisätää linkki dropin yläpuolelle
-                }
-                else {
-                    let nullHref = document.createElement("a")
-                                nullHref.target = '_blank';
-                                if (lastGame.length > 0) {
-                                    nullHref.href = lastGameLink
-                                    nullHref.innerHTML = lastGame
-                                } else {
-                                    nullHref.innerHTML = "‎"
-                                }
-                                nullHref.style.color = lastColor
-                                nullHref.style.textAlign = "center"
-                                nullHref.style.marginBottom = "5px"
-                                availableDrops[i].prepend(nullHref)
-                }
-                
-                    availableDrops[i].style.cssFloat = "left"
-
-                    removeDropButton = document.createElement("BUTTON");
-                    var removeDropButtonText = document.createTextNode("X");
-                    removeDropButton.appendChild(removeDropButtonText);
-                    removeDropButton.style.outline = "none"
-                    removeDropButton.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color")
-                    removeDropButton.className = "removeDropButton"
-                    removeDropButton.style.backgroundColor = "transparent"
-                    removeDropButton.style.position = "absolute"
-                    removeDropButton.style.fontWeight = "900"
-                    removeDropButton.style.opacity = "0.3"
-                    removeDropButton.style.transform = "translate(65px, -45px)"
-                    removeDropButton.style.transition = "0.4s"  
-                    removeDropButton.style.boxShadow = "0px 0px 0px 500px rgba(255, 200, 200, 0)"
-
-
-                    removeDropButton.addEventListener("mouseover", function (event) {
-                        event.target.style.color = "#ff3333"
-                        event.target.style.opacity = "1"
-                        event.target.style.boxShadow = "0px 0px 0px 500px rgba(255, 55, 55, 0.3)"
-                        event.target.style.backgroundColor = "rgba(255, 55, 55, 0.3)"
-                    }, false);
-                
-                    removeDropButton.addEventListener("mouseout", function (event) {
-                        event.target.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color")
-                        event.target.style.opacity = "0.3"
-                        event.target.style.boxShadow = "0px 0px 0px 500px rgba(255, 200, 200, 0)"
-                        event.target.style.backgroundColor = "transparent"
-
-                    
-                    }, false);
-                
-                    removeDropButton.onclick = removeDropFunc
-                
-                    function removeDropFunc() {
-                        hideDropList += dropID + ", "
-                        console.log(hideDropList)
-                        ifrm.contentWindow.document.getElementById(dropID).remove()
-                    }
-                    availableDrops[i].querySelector("div.tw-align-items-center.tw-c-background-alt.tw-flex.tw-justify-content-center.tw-pd-2.tw-relative").append(removeDropButton)
-
-
-                    scrollableContainer.appendChild(availableDrops[i]) //Lisätää koko juttu headerii
-                    foundDrops += 1
-                }
-
-                } else { //Sama mutta jos on "Claim now" button
-                    if (availableDrops[i].querySelector("button") !== null) {
-                        if (availableDrops[i].querySelector("button").classList.contains("ScCoreButton-sc-1qn4ixc-0") == true){
-                         
-                            dropName = availableDrops[i].getElementsByClassName("tw-font-size-5 tw-semibold")[0] //Otetaa dropName tekstin tiedot
-                            availableDrops[i].style.margin = "0"
-                            availableDrops[i].style.marginRight = "15px"
-                            availableDrops[i].style.height = "240px"
-                            availableDrops[i].style.width = "160px" //160px
-                            let link = availableDropsContainers[j].querySelector("div.tw-mg-x-1 > div > p > a")
-                            if (link != null) {
-                                link.style.textAlign = "center";
-                                let dropName = availableDrops[i].getElementsByClassName("tw-font-size-5 tw-semibold")[0]
-                                link.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color")
-                                link.style.paddingBottom = "5px"
-
-                                lastGameLink = link.href
-                                lastColor = link.style.color
-
-
-                                let gameURL = link.href.split('game/').pop().split('?')[0]
-
-                                gameURL = gameURL.split('%20').join(' ')
-                                gameURL = gameURL.split('%3A').join(':')
-                                gameURL = gameURL.split('%26').join('&')
-                                gameURL = gameURL.split('%7C').join('|')
-
-                                if (gameURL == "Tom Clancy's Rainbow Six Siege") {
-                                    gameURL = "Rainbow Six Siege"
-                                } else if (gameURL == "Call of Duty: Black Ops Cold War") {
-                                    gameURL = "Black Ops Cold War"
-                                } else if (gameURL == "Call of Duty: Warzone") {
-                                    gameURL = "Call of Duty: Warzone"
-                                } else if (gameURL == "Call Of Duty: Modern Warfare") {
-                                    gameURL = "Modern Warfare"
-                                } else if (gameURL == "PLAYERUNKNOWN'S BATTLEGROUNDS") {
-                                    gameURL = "PUBG"
-                                } else if (gameURL == "Monster Hunter: World") {
-                                    gameURL = "Monster Hunter: World"
-                                } else if (gameURL == "Counter-Strike: Global Offensive") {
-                                    gameURL = "CS:GO"
-                                } else if (gameURL == "Fall Guys: Ultimate Knockout") {
-                                    gameURL = "Fall Guys"
-                                } else if (gameURL == "Don't Starve Together") {
-                                    gameURL = "Don't Starve Together"
-                                } else if (gameURL.length > 20) {
-                                    gameURL = gameURL.slice(0, 20)
-                                    gameURL = gameURL += "..."
-                                }
-
-                                if (link.innerHTML == "a participating live channel") {
-                                    if (gameURL.length > 0) {
-                                        link.innerHTML = gameURL
-                                        lastGame = gameURL
-                                    } else {
-                                        link.innerHTML = "‎"
-                                    }
-                                }
-                                availableDrops[i].prepend(link)
-                            } else {
-                                //let nullLink = document.createElement('p')
-                                let nullHref = document.createElement("a")
-                                nullHref.target = '_blank';
-                                if (lastGame.length > 0) {
-                                    nullHref.href = lastGameLink
-                                    nullHref.innerHTML = lastGame
-                                } else {
-                                    nullHref.innerHTML = "‎"
-                                }
-                                nullHref.style.color = lastColor
-                                nullHref.style.textAlign = "center"
-                                nullHref.style.marginBottom = "5px"
-                                availableDrops[i].prepend(nullHref)
-                            }
-
-
-                            removeDropButton = document.createElement("BUTTON");
-                    var removeDropButtonText = document.createTextNode("X");
-                    removeDropButton.appendChild(removeDropButtonText);
-                    removeDropButton.style.outline = "none"
-                    removeDropButton.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color")
-                    removeDropButton.className = "removeDropButton"
-                    removeDropButton.style.backgroundColor = "transparent"
-                    removeDropButton.style.position = "absolute"
-                    removeDropButton.style.fontWeight = "900"
-                    removeDropButton.style.opacity = "0.3"
-                    removeDropButton.style.transform = "translate(65px, -45px)"
-                    removeDropButton.style.transition = "0.4s"  
-                    removeDropButton.style.boxShadow = "0px 0px 0px 500px rgba(255, 200, 200, 0)"
-
-
-                    removeDropButton.addEventListener("mouseover", function (event) {
-                        event.target.style.color = "#ff3333"
-                        event.target.style.opacity = "1"
-                        event.target.style.boxShadow = "0px 0px 0px 500px rgba(255, 30, 30, 0.5)"
-                        event.target.style.backgroundColor = "rgba(255, 30, 30, 0.5)"
-                    }, false);
-                
-                    removeDropButton.addEventListener("mouseout", function (event) {
-                        event.target.style.color = ifrm.contentWindow.getComputedStyle(dropName, null).getPropertyValue("color")
-                        event.target.style.opacity = "0.3"
-                        event.target.style.boxShadow = "0px 0px 0px 500px rgba(255, 200, 200, 0)"
-                        event.target.style.backgroundColor = "transparent"
-
-                    
-                    }, false);
-                
-                    removeDropButton.onclick = removeDropFunc
-                
-                    function removeDropFunc() {
-                        hideDropList += dropID + ", "
-                        console.log(hideDropList)
-                        ifrm.contentWindow.document.getElementById(dropID).remove()
-                    }
-                    availableDrops[i].querySelector("div.tw-align-items-center.tw-c-background-alt.tw-flex.tw-justify-content-center.tw-pd-2.tw-relative").append(removeDropButton)
-
-
-
-                            availableDrops[i].style.cssFloat = "left"
-                            scrollableContainer.prepend(availableDrops[i])
-                            foundDrops += 1
-
-                        }
-                    }
-                }
+        function checkForAbout() {
+            console.log("ABOUT")
+            let counter = 0
+            let maxCount = 150
+            if (extendSearch == true) {
+                maxCount = 500
             }
 
+            let aboutInterval = setInterval(() => {
+                aboutContainer = document.getElementsByClassName("hHdHvp")
+                if (aboutContainer.length > 0 && counter < maxCount) {
+                    createGUI()
+                    clearInterval(aboutInterval)
+                } else if (counter >= maxCount) { //KUINKA MONTA SEKUNTTII ENNENKU TULEE ERROR, 30 sekunttia
+                    console.log("%c TDM ERROR || Couldn't find page elements", 'background: #ff0000; color: #fff')
+                    clearInterval(aboutInterval)
+                } else {
+                    counter += 1
+                }
+            }, 200);
         }
-        if (foundDrops == 0) {
-            if (showHintText == false) {
-                ifrm.height = "50px"
 
-                var specificRefresh = document.createElement("BUTTON");
-                specificRefresh.setAttribute("id", "refreshButtonTDM");
-                specificRefresh.innerHTML = "Refresh";
-                specificRefresh.style.textDecoration = "underline"
-                scrollableContainer.prepend(specificRefresh)
+        function createGUI() {
+            console.log("GUI")
 
-                let noDropsDiv = document.createElement('p')
-                noDropsDiv.style.marginTop = "10px"
-                noDropsDiv.append("No eligible drops found. If this is your first time watching the channel while drops are enabled, it may take couple minutes to register.")
-                scrollableContainer.prepend(noDropsDiv)
+            containerDiv = document.createElement("div")
+            containerDiv.style.width = "100%"
+            containerDiv.style.height = "270px"
+            containerDiv.style.position = "relative"
+            containerDiv.className = "TDMDiv"
+            aboutContainer[0].appendChild(containerDiv)
 
-                ifrm.contentWindow.document.getElementById("refreshButtonTDM").addEventListener("click", function () {
-                    reloadIframe()
+            buttonsDiv = document.createElement("div")
+            hideDropsButton = document.createElement("a")
+            dropsPageButton = document.createElement("a")
+            dropsPageButton.href = "https://www.twitch.tv/drops/inventory"
+            dropsPageButton.target = "_blank"
+            dropsPageButton.innerHTML = "Drops page"
+
+            hideDropsButton.href = "javascript:void(0)"
+            hideDropsButton.innerHTML = "Hide drops"
+            hideDropsButton.style.marginRight = "15px"
+            hideDropsButton.style.marginLeft = "30px"
+
+            hideDropsButton.addEventListener("click", function (e) {
+                if (hideDropsButton.innerHTML == "Hide drops") {
+                    hideDrops()
+                } else {
+                    showDrops()
+                }
+            })
+
+            if (hideButtonsDefault == true) {
+                hideDrops()
+            } else {
+                dropsShown = true
+            }
+            reloadButton = document.createElement("div")
+
+            let reloadButtonSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            reloadButtonSVG.setAttribute("aria-hidden", "true");
+            reloadButtonSVG.setAttribute('viewBox', '0 0 32 32');
+            reloadButtonSVG.setAttribute('width', '16px');
+            reloadButtonSVG.setAttribute('height', '16px');
+            reloadButtonSVG.setAttribute('float', 'left');
+            reloadButtonSVG.setAttribute('position', 'relative');
+
+
+            var reloadPath = document.createElementNS("http://www.w3.org/2000/svg", 'path');
+            reloadPath.setAttribute('d', "M 16 4 C 10.886719 4 6.617188 7.160156 4.875 11.625 L 6.71875 12.375 C 8.175781 8.640625 11.710938 6 16 6 C 19.242188 6 22.132813 7.589844 23.9375 10 L 20 10 L 20 12 L 27 12 L 27 5 L 25 5 L 25 8.09375 C 22.808594 5.582031 19.570313 4 16 4 Z M 25.28125 19.625 C 23.824219 23.359375 20.289063 26 16 26 C 12.722656 26 9.84375 24.386719 8.03125 22 L 12 22 L 12 20 L 5 20 L 5 27 L 7 27 L 7 23.90625 C 9.1875 26.386719 12.394531 28 16 28 C 21.113281 28 25.382813 24.839844 27.125 20.375 Z ");
+            reloadPath.setAttribute('fill', '#9B67E9');
+
+            reloadButtonSVG.appendChild(reloadPath);
+            reloadButton.append(reloadButtonSVG)
+            reloadButton.style.height = "16px"
+            reloadButton.style.width = "16px"
+            reloadButton.style.marginLeft = "14px"
+            reloadButton.style.display = "inline-block"
+            reloadButton.style.verticalAlign = "middle"
+
+            let clickRefresh = document.createElement("div")
+            clickRefresh.style.width = "16px"
+            clickRefresh.style.height = "16px"
+            clickRefresh.style.position = "absolute"
+            reloadButton.prepend(clickRefresh)
+
+            reloadButton.addEventListener("mouseover", function (event) {
+                event.target.style.cursor = "pointer";
+            }, false);
+
+            reloadButton.addEventListener("mouseout", function (event) {
+                event.target.style.cursor = "default";
+            }, false);
+
+            reloadButton.onclick = reloadAndShow
+
+            function reloadAndShow() {
+                showDrops()
+                containerDiv.appendChild(loadingImg)
+                reloadIframe()
+            }
+
+            buttonsDiv.appendChild(hideDropsButton)
+            buttonsDiv.appendChild(dropsPageButton)
+            buttonsDiv.appendChild(reloadButton)
+
+            containerDiv.appendChild(buttonsDiv)
+
+            loadingImg = document.createElement("img")
+            loadingImg.style.width = "auto"
+            loadingImg.style.height = "85%"
+            if (window.getComputedStyle(document.querySelector(".fwsYSr.tw-title")).color == "rgb(239, 239, 241)") {
+                loadingImg.src = "https://i.imgur.com/U0NTzcR.gif"
+            } else {
+                loadingImg.src = "https://i.imgur.com/zsUrjoy.gif"
+            }
+            loadingImg.style.position = "absolute"
+            loadingImg.style.top = "50%"
+            loadingImg.style.left = "50%"
+            loadingImg.style.transform = "translate(-50%, -50%)"
+            loadingImg.style.opacity = "1"
+            loadingImg.style.transition = "0.4s"
+            if (hideButtonsDefault == false) {
+                containerDiv.appendChild(loadingImg) //LISÄTÄÄN LATAUS RUUTU
+            }
+            createIframe()
+        }
+
+        function createIframe() {
+            console.log("IFRAME")
+
+            iframe = document.createElement("iframe")
+            iframe.domain = "twitch.tv"
+            iframe.src = "https://www.twitch.tv/drops/inventory"
+            iframe.style.width = "100%"
+            iframe.style.height = "0px"
+            iframe.style.position = "relative"
+            iframe.style.transition = "1s"
+            iframe.style.transitionTimingFunction = "ease-in-out"
+            iframe.style.opacity = "0"
+            iframe.className = "TDMIframe"
+            containerDiv.appendChild(iframe)
+
+            let counter = 0
+            let cleared = false
+            let dropInterval = setInterval(() => {
+                if (iframe.contentWindow.document.getElementsByClassName("dMuSkD")) {
+                    dropContainer = iframe.contentWindow.document.getElementsByClassName("dMuSkD")
+                    let maxCounter = 50
+                    if (extendSearch == true) {
+                        maxCounter = 500
+                    }
+                    if (dropContainer.length > 0 && counter < maxCounter && cleared == false) {
+                        for (i = 0; i < dropContainer.length; i++) {
+                            iframe.contentWindow.document.querySelector(".gelSNc").style.marginTop = "-30px"
+                            iframe.contentWindow.document.querySelector(".gelSNc").style.display = "flex"
+                            iframe.contentWindow.document.querySelector(".gelSNc").style.flexDirection = "row"
+                            iframe.contentWindow.document.querySelector(".gelSNc").style.flexWrap = "wrap"
+                            iframe.contentWindow.document.querySelector(".gelSNc").prepend(dropContainer[i])
+                        }
+                        let invPage = iframe.contentWindow.document.querySelector(".inventory-page")
+                        let sideNav = iframe.contentWindow.document.querySelector("#sideNav")
+                        let topNav = iframe.contentWindow.document.querySelector(".top-nav")
+                        let header = iframe.contentWindow.document.querySelector("#twilight-sticky-header-root")
+                        let root = iframe.contentWindow.document.querySelector(".kZPAIb")
+
+                        counter = 0
+                        let removeElements = setInterval(() => {
+                            if (invPage && sideNav && topNav && header && root && counter < maxCounter) { // 10 sekkaa invPage && sideNav && topNav && header && root && counter < 50
+                                invPage.remove()
+                                sideNav.remove()
+                                topNav.remove()
+                                header.remove()
+                                //root.prepend(buttonsDiv)
+                                //buttonsDiv.append(hideDropsButton)
+                                //buttonsDiv.append(dropsPageButton)
+                                clearInterval(removeElements)
+                                clearInterval(dropInterval)
+                                getDrops()
+                            } else if (counter >= maxCounter) { // counter >= 50
+                                clearInterval(removeElements)
+                                clearInterval(dropInterval)
+                                errorText = "An error occurred while trying to load drops.  " + "<a href='javascript:void(0)' style='color:" + window.getComputedStyle(document.querySelector(".fwsYSr.tw-title")).color + "'><u>REFRESH</u></a>"
+                                errorRefresh()
+                            } else {
+                                counter += 1
+                            }
+                        }, 200);
+
+                        cleared = true
+
+                    } else if (counter >= maxCounter) { //counter >= 50
+                        clearInterval(dropInterval)
+                        errorText = "No available drops found.  " + "<a href='javascript:void(0)' style='color:" + window.getComputedStyle(document.querySelector(".fwsYSr.tw-title")).color + "'><u>REFRESH</u></a>"
+                        noDrops = true
+                        errorRefresh()
+                    } else {
+                        counter += 1
+                    }
+                }
+            }, 200);
+        }
+
+        function getDrops() {
+            console.log("DROPS")
+
+            for (i = 0; i < dropContainer.length; i++) {
+                dropElement = dropContainer[i].getElementsByClassName("jfqeCv")
+                for (j = 0; j < dropElement.length; j++) {
+                    if (dropElement[j].getElementsByClassName("cjzcPL").length > 0 || dropElement[j].getElementsByClassName("fDLYZL").length > 0) {
+                        let dropChannel = dropContainer[i].getElementsByClassName("ScCoreLink-udwpw5-0 FXIKh tw-link")[1]
+                        if (dropChannel.innerText == "a participating live channel") { //JOS ON PELI
+                            dropChannelName = dropChannel.href.split('game/').pop().split('?')[0]
+                            fixName()
+                        } else if (dropChannel.innerText.length != 0) { //JOS ON KANAVA
+                            dropChannelName = dropChannel.href.split('/').pop()
+                        }
+
+                        dropLink = iframe.contentWindow.document.createElement("a")
+                        dropLink.href = dropChannel.href
+                        dropLink.innerHTML = dropChannelName
+                        dropLink.target = "_blank"
+                        dropLink.style.textAlign = "center"
+                        dropLink.style.marginBottom = "3px"
+                        dropLink.style.color = window.getComputedStyle(dropElement[j]).color
+                        dropElement[j].prepend(dropLink)
+
+                        dropElement[j].style.height = "240px"
+                        dropElement[j].style.width = "160px"
+                        dropElement[j].style.marginRight = "10px"
+                        dropElement[j].style.order = 0 //MUOKKAA TÄTÄ JOS HALUU SORTTAA
+
+                        if (dropElement[j].getElementsByClassName("fDLYZL").length > 0) { //JOS ON CLAIMATTAVISSA LISÄÄ EKAKS
+                            dropElement[j].style.order = -9999999
+
+                            if (dropElement[j].querySelector(".jMWlGV")) {
+                                dropElement[j].querySelector(".jMWlGV").addEventListener("click", function (e) {
+                                    if (dropElement[j]) {
+                                        dropElement[j].remove()
+                                    }
+                                    reloadIframe()
+                                })
+                            }
+                        }
+
+                        let dropID = dropElement[j].querySelector("img").src
+                        dropID = dropID.split('BENEFIT-').pop().split('.')[0]
+                        if (foundIDs.includes(dropID)) {
+                            changeID()
+                        }
+
+                        function changeID() {
+                            dropID += "new"
+                            if (foundIDs.includes(dropID)) {
+                                changeID()
+                            }
+                        }
+
+                        foundIDs.push(dropID)
+                        dropElement[j].id = dropID
+
+                        //REMOVE DROP
+                        removeDropsButton = iframe.contentWindow.document.createElement("a")
+                        removeDropsButton.href = "javascript:void(0)"
+                        removeDropsButton.innerHTML = "X"
+                        removeDropsButton.style.position = "absolute"
+                        removeDropsButton.style.fontWeight = "900"
+                        removeDropsButton.style.top = "5px"
+                        removeDropsButton.style.right = "7px"
+                        removeDropsButton.style.zIndex = "10"
+                        removeDropsButton.style.color = window.getComputedStyle(dropElement[j]).color
+                        removeDropsButton.style.textDecoration = "none"
+                        removeDropsButton.style.transition = "0.4s"
+                        removeDropsButton.style.opacity = "0.3"
+
+                        removeDropsButton.addEventListener("mouseover", function (e) {
+                            e.target.style.opacity = "1.0"
+                            e.target.style.boxShadow = "0px 0px 0px 500px rgba(255, 60, 60, 0.4)"
+                            e.target.style.backgroundColor = "rgba(255, 60, 60, 0.4)"
+                        })
+
+                        removeDropsButton.addEventListener("mouseout", function (e) {
+                            e.target.style.opacity = "0.3"
+                            e.target.style.boxShadow = "0px 0px 0px 500px rgba(255, 60, 60, 0)"
+                            e.target.style.backgroundColor = "transparent"
+                        })
+
+                        removeDropsButton.addEventListener("click", function (e) {
+                            hiddenDrops.push(dropID)
+                            chrome.storage.sync.set({
+                                hideDropsList: hiddenDrops
+                            })
+                            iframe.contentWindow.document.getElementById(dropID).remove()
+                            checkIfIfameHasDrops()
+                        })
+                        dropElement[j].querySelector(".bIviRh").append(removeDropsButton)
+
+                        if (dropElement[j].getElementsByClassName("fDLYZL").length < 1) { //JOS EI OO CLAIMABLE LISÄÄ AIKA
+                            let timeLeft = dropElement[j].querySelector(".dEPHbs").innerText
+                            let timePercent = timeLeft.split('%')[0]
+                            let finalTime = undefined
+                            let sortTime = undefined
+
+                            if (timeLeft.includes("hour") == false && timeLeft.includes("minute") == true) {
+                                let timeMinutes = timeLeft.split('of ').pop().split(' m')[0]
+                                finalTime = Math.ceil(parseInt(timeMinutes - timeMinutes * timePercent / 100)) + " min (" + timePercent + "%)"
+                                sortTime = Math.ceil(parseInt(timeMinutes - timeMinutes * timePercent / 100))
+                            } else if (timeLeft.includes("hour") == true && timeLeft.includes("minute") == false) {
+                                let timeHours = parseInt(timeLeft.split('of ').pop().split(' h')[0]) * 60
+                                finalTime = Math.ceil(parseInt(timeHours - timeHours * timePercent / 100))
+                                sortTime = finalTime
+                                if (finalTime <= 60) {
+                                    finalTime = finalTime + " min (" + timePercent + "%)"
+                                } else {
+                                    let getHours = Math.trunc(finalTime / 60)
+                                    let getMinutes = finalTime % 60
+                                    finalTime = getHours + "h " + getMinutes + "min (" + timePercent + "%)"
+                                }
+                            } else if (timeLeft.includes("hour") == true && timeLeft.includes("minute") == true) {
+                                let hours = parseInt(timeLeft.split(' ')[2] * 60)
+                                let mins = parseInt(timeLeft.split(' ')[4])
+                                finalTime = hours + mins
+                                sortTime = finalTime
+                                let getHours = Math.trunc(finalTime / 60)
+                                let getMinutes = finalTime % 60
+                                finalTime = getHours + "h " + getMinutes + "min (" + timePercent + "%)"
+                            }
+
+                            if (showTimeIn == true) {
+                                dropElement[j].querySelector(".dEPHbs").innerText = finalTime
+                            }
+                            dropElement[j].classList.add("TDMDropSort")
+                            dropElement[j].classList.add(sortTime)
+                        }
+
+                        if (autoClaimValue == true && dropElement[j].getElementsByClassName("fDLYZL").length > 0) { //AUTOCLAIMERI
+                            dropElement[j].querySelector(".jMWlGV").click()
+                            setTimeout(() => {
+                                if (dropElement[j]) {
+                                    dropElement[j].remove()
+                                }
+                            }, 1000);
+
+                        } else if (!hiddenDrops.includes(dropID)) { //JOS EI OO POISTETTU
+                            iframe.contentWindow.document.querySelector(".gelSNc").prepend(dropElement[j]) //LISÄTÄÄN DROPPI
+                            j -= 1
+                        }
+
+                    } else {
+                        dropElement[j].remove()
+                        j -= 1
+                    }
+                }
+                dropContainer[i].remove()
+                i -= 1
+            }
+
+            //if sort enabled
+            sortDrops()
+
+            iframe.style.opacity = "1"
+            iframe.style.height = "12px"
+            if (hideButtonsDefault == false || hideButtonsDefault == true && dropsShown == true) {
+                iframe.style.width = "100%"
+                iframe.style.height = "270px"
+            }
+
+            if (loadingImg) {
+                loadingImg.style.opacity = "0"
+                setTimeout(() => {
+                    loadingImg.remove() //POISTETAAN LATAUS RUUTU
+                }, 1200);
+            }
+
+            if (document.getElementsByClassName("TDMIframe").length > 1) {
+                iframe.style.transition = "0s"
+                document.getElementsByClassName("TDMIframe")[0].remove()
+            }
+
+            checkIfIfameHasDrops()
+        }
+
+        let reloadInterval = setInterval(() => {
+            reloadIframe()
+        }, refreshTime); //refreshTime
+
+        function fixName() {
+            dropChannelName = dropChannelName.split('%20').join(' ')
+            dropChannelName = dropChannelName.split('%3A').join(':')
+            dropChannelName = dropChannelName.split('%26').join('&')
+            dropChannelName = dropChannelName.split('%7C').join('|')
+
+            if (dropChannelName == "Tom Clancy's Rainbow Six Siege") {
+                dropChannelName = "Rainbow Six Siege"
+            } else if (dropChannelName == "Call of Duty: Black Ops Cold War") {
+                dropChannelName = "Black Ops Cold War"
+            } else if (dropChannelName == "Call of Duty: Warzone") {
+                dropChannelName = "Call of Duty: Warzone"
+            } else if (dropChannelName == "Call Of Duty: Modern Warfare") {
+                dropChannelName = "Modern Warfare"
+            } else if (dropChannelName == "PLAYERUNKNOWN'S BATTLEGROUNDS") {
+                dropChannelName = "PUBG"
+            } else if (dropChannelName == "Monster Hunter: World") {
+                dropChannelName = "Monster Hunter: World"
+            } else if (dropChannelName == "Counter-Strike: Global Offensive") {
+                dropChannelName = "CS:GO"
+            } else if (dropChannelName == "Fall Guys: Ultimate Knockout") {
+                dropChannelName = "Fall Guys"
+            } else if (dropChannelName == "Don't Starve Together") {
+                dropChannelName = "Don't Starve Together"
+            } else if (dropChannelName.length > 20) {
+                dropChannelName = dropChannelName.slice(0, 20) + "..."
+            }
+        }
+
+        function hideDrops() {
+            hideDropsButton.innerHTML = "Show drops"
+            hideDropsButton.style.marginRight = "9.5px"
+            containerDiv.style.height = "12px"
+            containerDiv.style.transition = "0.4s"
+            if (iframe) {
+                iframe.style.height = "0px"
+                iframe.style.transition = "0.4s"
+            }
+            if (loadingImg && loadingImg.style.opacity == "1") {
+                loadingImg.style.opacity = "0"
+            }
+            dropsShown = false
+        }
+
+        function showDrops() {
+            hideDropsButton.innerHTML = "Hide drops"
+            hideDropsButton.style.marginRight = "15px"
+            containerDiv.style.height = "270px"
+            containerDiv.style.transition = "0.4s"
+            if (iframe) {
+                iframe.style.height = "270px"
+                iframe.style.transition = "0.4s"
+            }
+            if (loadingImg && loadingImg.style.opacity == "0") {
+                loadingImg.style.opacity = "1"
+            }
+            dropsShown = true
+        }
+
+        function reloadIframe() {
+            console.log("RELOADING")
+            console.log("RELOADING")
+            console.log("RELOADING")
+            console.log("RELOADING")
+            foundIDs = []
+            createIframe()
+        }
+
+        function errorRefresh() {
+            if (loadingImg !== undefined) {
+                loadingImg.remove()
+            }
+            errorMessage = document.createElement("p")
+            if (noDrops == false) {
+                errorMessage.style.color = "#FF3537"
+            } else {
+                errorMessage.style.color = window.getComputedStyle(document.querySelector(".fwsYSr.tw-title")).color
+                noDrops = false
+            }
+            errorMessage.style.fontWeight = "700"
+            errorMessage.style.marginLeft = "30px"
+            errorMessage.innerHTML = errorText
+            buttonsDiv.prepend(errorMessage)
+            hideDropsButton.remove()
+            dropsPageButton.remove()
+            reloadButton.remove()
+            containerDiv.style.height = "15px"
+
+            clearInterval(reloadInterval)
+
+            errorMessage.addEventListener("click", function (e) {
+                iframe.remove()
+                containerDiv.remove()
+                //error = false
+                start()
+            })
+        }
+
+        function checkIfIfameHasDrops() {
+            if (iframe.contentWindow.document.getElementsByClassName("fDLYZL").length < 1 && iframe.contentWindow.document.getElementsByClassName("cjzcPL").length < 1) {
+                errorText = "No available drops found.  " + "<a href='javascript:void(0)' style='color:" + window.getComputedStyle(document.querySelector(".fwsYSr.tw-title")).color + "'><u>REFRESH</u></a>"
+                noDrops = true
+                errorRefresh()
+            }
+        }
+
+        function sortDrops() {
+            let sortArray = []
+            if (iframe.contentWindow.document.getElementsByClassName("TDMDropSort")) {
+                let sortableDrops = iframe.contentWindow.document.getElementsByClassName("TDMDropSort")
+                for (i = 0; sortableDrops.length > i; i++) {
+                    sortArray.push(sortableDrops[i].classList[sortableDrops[i].classList.length - 1])
+                }
+                sortArray.sort(function (a, b) {
+                    return a - b
                 })
 
-                ifrm.style.visibility = "visible"
-            }
-        } else {
-            ifrm.height = "275px"
-            ifrm.style.visibility = "visible" //Kun kaikki on poistettu (ja dropit lisätty) laitetaa iframe näkyvii
-            reloadTime = setTimeout(reloadIframe, refreshTime); //Reload funktio käyttäjän asettaman minuutin välein
-        }
-    }
-
-    function createIframe() {
-        let removeElements = setInterval(function () {
-            up0 = ifrm.contentWindow.document.querySelector("div.tw-flex.tw-flex-column.tw-flex-nowrap.tw-full-height > nav")
-            up1 = ifrm.contentWindow.document.querySelector("#twilight-sticky-header-root > div");
-            up2 = ifrm.contentWindow.document.querySelector("div.tw-flex-grow-1.tw-mg-b-2");
-            up3 = ifrm.contentWindow.document.querySelector("div.inventory-max-width > div:nth-child(1)");
-            down0 = ifrm.contentWindow.document.querySelector("div.root-scrollable.scrollable-area > div.simplebar-scroll-content > div > div > div > div > div > div > div:nth-child(3)")
-            sidenav = ifrm.contentWindow.document.getElementById("sideNav");
-            titleDrops = ifrm.contentWindow.document.querySelector("div.title-bar.tw-flex.tw-pd-b-1 > div");
-            scroll1 = ifrm.contentWindow.document.querySelector("div.root-scrollable.scrollable-area > div.simplebar-track.vertical")
-            dropsBody = ifrm.contentWindow.document.getElementsByTagName("BODY")[0];
-            containerit = ifrm.contentWindow.document.querySelector("div.inventory-max-width")
-            header = ifrm.contentWindow.document.querySelector("#twilight-sticky-header-root")
-            marginEdit = ifrm.contentWindow.document.querySelector("div.root-scrollable.scrollable-area > div.simplebar-scroll-content > div > div > div > div")
-            scrollableContainer = ifrm.contentWindow.document.querySelector("div.root-scrollable.scrollable-area > div.simplebar-scroll-content > div > div > div > div > div > div")
-            availableDropsContainers = ifrm.contentWindow.document.getElementsByClassName("tw-border-radius-medium tw-c-background-base tw-elevation-1 tw-flex tw-flex-grow-0 tw-flex-row tw-mg-b-2")
-
-            if (up0 != null && up1 != null && up2 != null && up3 != null && down0 != null && sidenav != null && titleDrops != null && dropsBody != null && header != null) {
-                up0.style.display = "none";
-                up1.style.marginTop = "-30px";
-                up2.style.display = "none";
-                up3.style.display = "none";
-                down0.style.display = "none";
-                sidenav.style.display = "none";
-                titleDrops.style.display = "none";
-                //scroll1.style.display = "none";
-                //dropsBody.style.visibility = "hidden";
-                containerit.style.display = "none"
-                header.style.display = "none"
-                marginEdit.style.marginTop = "-30px"
-                scrollableContainer.style.visibility = "visible"
-                
-                takeDrops()
-                clearInterval(removeElements)
-            } else {
-                console.log("Failed to load drops") //Tähän joku "Failed to load drops" jne
-            }
-        }, 100);
-    }
-
-    let waitForDrops = 0
-
-    function checkIframeDrops() {
-        waitForDrops = 0
-        iframeCreate = setInterval(function () {
-            if (ifrm.contentWindow.document.getElementsByClassName("tw-border-radius-medium tw-c-background-base tw-elevation-1 tw-flex tw-flex-grow-0 tw-flex-row tw-mg-b-2")[0]) { //Jos dropit löytyy iframesta
-                if (ifrm.contentWindow.document.querySelector("div.inventory-max-width > div:nth-child(1)")) { //Kattoo löytyykö "In Progress" teksti
-                    createIframe(); //Tehdään iframe näyttökelposeks    
-                    clearInterval(iframeCreate); //Lopetetaa toisto
-                }
-            } else if (waitForDrops > 20) {
-                if (showHintText == false) {
-                    ifrm.height = "50px"
-
-                    var noDropsButton = document.createElement("BUTTON");
-                    noDropsButton.setAttribute("id", "noDropsRefreshTDM");
-                    noDropsButton.innerHTML = "Refresh";
-                    noDropsButton.style.textDecoration = "underline"
-                    noDropsButton.style.width = "50px"
-                    noDropsButton.style.marginLeft = "30px"
-                    ifrm.contentWindow.document.getElementsByTagName("BODY")[0].prepend(noDropsButton)
-
-                    let noDropsFoundDiv = document.createElement('p')
-                    noDropsFoundDiv.append("No drops found. If you believe there should be drops here, try refreshing by pressing the button below.")
-                    noDropsFoundDiv.style.marginLeft = "30px"
-                    ifrm.contentWindow.document.getElementsByTagName("BODY")[0].prepend(noDropsFoundDiv)
-
-                    ifrm.contentWindow.document.getElementById("root").style.visibility = "hidden"
-                    ifrm.style.visibility = "visible"
-
-                    ifrm.contentWindow.document.getElementById("noDropsRefreshTDM").addEventListener("click", function () {
-                        noDropsButton.remove()
-                        noDropsFoundDiv.remove()
-                        checkIframeDrops()
-                    })
-                
-                }
-                clearInterval(iframeCreate)
-            } else {
-                waitForDrops += 1
-            }
-        }, 100);
-
-    }
-
-    
-    function insertIframe() {
-        let insertIframe = setInterval(function () {
-            if (document.querySelector("div.channel-root__info > div > div:nth-child(2)") && document.querySelector("div.ScHaloIndicator-sc-1l14b0i-1.jYqVGu.tw-halo__indicator > div > div") && document.querySelector("div.tw-flex-grow-0.tw-flex-shrink-1") && oldStream != undefined) { //katotaa löytyykö about osa sivulta ja onko se live
-
-                if (hideChannelsList.toLowerCase().split(", ").indexOf(oldStream.toLowerCase()) == -1) { //TOIMII NÄI MUTTA TUSKI SAA KAIKKII TIETOI AJOIS
-                    document.querySelector("div.channel-root__info > div > div:nth-child(2)").prepend(ifrm) //Lisätää iframe about osan yläpuolelle
-                    
-                    checkIframeDrops(); //Katotaa löytyykö droppeja iframesta
-
-                    //Buttonit
-
-                    if (document.getElementsByClassName("iFrameSettingsButton").length == 0 && document.getElementsByClassName("dropsPageButton").length == 0 && document.getElementsByClassName("iFrameButton").length == 0) {
-                    addButtons()
-                }
-                    clearInterval(insertIframe); //Lopetetaa toisto
-                } else {
-                    clearInterval(insertIframe);
-                }
-            }
-        }, 100);
-    }
-
-    //Luodaan iframe
-    var ifrm = document.createElement('iframe');
-
-    //Listataan kaikki iframen elementit mitä tullaan käyttää
-    var up0 = ""
-    var up1 = ""
-    var up2 = ""
-    var up3 = ""
-    var down0 = ""
-    var sidenav = ""
-    var titleDrops = ""
-    var scroll1 = ""
-    var dropsBody = ""
-    var containerit = ""
-    var header = ""
-    var marginEdit = ""
-    var scrollableContainer = ""
-    var availableDropsContainers = ""
-
-    var hideDropsButton = false
-
-    let currentStream = ""
-    let oldStream = undefined
-
-    let currentGame = ""
-    let oldGame = undefined
-
-    var hideIframeButton
-    var dropsPageButton
-    var settingsButton
-
-    var hideDropList = "" 
-
-    function settingsButtonFunc(){
-        settingsButton = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        settingsButton.setAttribute("aria-hidden", "true");
-        settingsButton.setAttribute('viewBox', '0 0 512 512');
-        settingsButton.setAttribute('width', '16px');
-        settingsButton.setAttribute('height', '16px');
-        settingsButton.className = "iFrameSettingsButton"
-
-
-        var path = document.createElementNS("http://www.w3.org/2000/svg", 'path');
-        path.setAttribute('d', "M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z");
-        path.setAttribute('fill', '#9B67E9');
-
-        settingsButton.appendChild(path);
-
-        settingsButton.style.marginLeft = "10px"
-        settingsButton.style.marginBottom = "-4px"
-        //settingsButton.style.color = "#9B67E9"
-
-        settingsButton.addEventListener("mouseover", function (event) {
-            event.target.style.cursor = "pointer";
-        }, false);
-
-        settingsButton.addEventListener("mouseout", function (event) {
-            event.target.style.cursor = "default";
-        }, false);
-
-
-        settingsButton.onclick = openSettings
-
-        function openSettings() {
-            chrome.runtime.sendMessage({
-                    message: 'buttonClicked'
-                },
-                function () {});
-
-        }
-    }
-
-    function addButtons() {
-
-        settingsButtonFunc()
-
-        dropsPageButton = document.createElement("BUTTON");
-        var dropsPageButtonText = document.createTextNode("Drops page");
-        dropsPageButton.appendChild(dropsPageButtonText);
-        dropsPageButton.style.paddingLeft = "10px"
-        dropsPageButton.style.color = "#9B67E9"
-        dropsPageButton.className = "dropsPageButton"
-
-
-        dropsPageButton.addEventListener("mouseover", function (event) {
-            event.target.style.textDecoration = "underline"
-        }, false);
-
-        dropsPageButton.addEventListener("mouseout", function (event) {
-            event.target.style.textDecoration = "none"
-        }, false);
-
-        dropsPageButton.onclick = dropsPageFunc
-
-        function dropsPageFunc() {
-            var win = window.open("https://www.twitch.tv/drops/inventory", '_blank');
-            win.focus();
-        }
-
-        hideIframeButton = document.createElement("BUTTON");
-        var hideIframeButtonText = document.createTextNode("Hide drops");
-        hideIframeButton.appendChild(hideIframeButtonText);
-        hideIframeButton.style.paddingLeft = "30px"
-        hideIframeButton.style.color = "#9B67E9"
-        hideIframeButton.className = "iFrameButton"
-
-        hideIframeButton.addEventListener("mouseover", function (event) {
-            event.target.style.textDecoration = "underline"
-        }, false);
-
-        hideIframeButton.addEventListener("mouseout", function (event) {
-            event.target.style.textDecoration = "none"
-        }, false);
-
-
-        if (hideButtonsDefault == true) {
-            hideDropsButton = true
-            //ifrm.style.visibility = "hidden"
-            ifrm.style.float = "left"
-            ifrm.style.marginLeft = "-1000000px"
-            //ifrm.style.float = "left"
-
-            hideIframeButtonText.nodeValue = "Show drops"
-        }
-
-        hideIframeButton.onclick = hideButtonFunc
-
-        function hideButtonFunc() {
-            if (hideDropsButton == false) {
-                hideDropsButton = true
-                //ifrm.style.visibility = "hidden"
-                ifrm.style.float = "left"
-                ifrm.style.marginLeft = "-1000000px"
-                //ifrm.style.float = "left"
-
-                hideIframeButtonText.nodeValue = "Show drops"
-            } else {
-                hideDropsButton = false
-                //ifrm.style.visibility = "visible"
-                hideIframeButtonText.nodeValue = "Hide drops"
-                ifrm.style.float = "none"
-                ifrm.style.marginLeft = "0px"
-            }
-        }
-
-        document.querySelector("div.tw-flex-grow-0.tw-flex-shrink-1").append(hideIframeButton)
-        document.querySelector("div.tw-flex-grow-0.tw-flex-shrink-1").append(dropsPageButton)
-        document.querySelector("div.tw-flex-grow-0.tw-flex-shrink-1").append(settingsButton)
-    }
-
-    function start() {
-        if (disableTDM == false) {
-
-            ifrm.setAttribute('src', 'https://www.twitch.tv/drops/inventory');
-            ifrm.width = "100%"
-            ifrm.height = "0px" //1 row 270px, 2 row 530px, 3 row 810px
-            ifrm.style.visibility = "hidden" //Piilota iframe
-            insertIframe() //Lisätää iframe aboutin yläpuolelle näkymättömänä
-            let gameCheckTime = 0
-
-            let nameCheck = setInterval(function () {
-            let streamNameDiv = document.querySelector("div.tw-align-items-center.tw-flex > a") //Striimin nimi div
-        
-                        if (streamNameDiv != null) { //Katotaa löytyykö divi
-                            if (streamNameDiv.innerText.length > 0) { //Jos löytyy katotaan onko siinä tekstiä
-                                currentStream = streamNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
-                                if (oldStream == undefined) { //Jos ei oo vielä oldStream
-                                    oldStream = currentStream //Lisätää nykyne striimi oldStreamii
-
-                                }
-                                if (currentStream == oldStream) { //Jos nykyne striimi sama kun vanha
-                                } else {
-                                    oldStream = currentStream //Jos on uus striimi, nii lisätään sen nimi oldStreamii
-                                    console.log(oldStream)
-
-
-                                    ifrm.style.visibility = "hidden" //Piilotetaa iframe
-                                    if (hideChannelsList.toLowerCase().split(", ").indexOf(oldStream.toLowerCase()) == -1) {
-                                        hideIframeButton.style.visibility = 'visible'
-                                        dropsPageButton.style.visibility = 'visible'
-                                        settingsButton.style.visibility = 'visible'
-        
-        
-                                        insertIframe() //Lisätää iframe uudestaa
-                                    } else {
-                                        ifrm.height = "0px"
-                                        hideIframeButton.style.visibility = 'hidden';
-                                        dropsPageButton.style.visibility = 'hidden';
-                                        settingsButton.style.visibility = 'hidden';
-                                        clearTimeout(reloadTime)
-                                    }
-                                }
-                            }
+                for (j = 0; sortArray.length > j; j++) {
+                    for (x = 0; x < sortableDrops.length;) {
+                        if (sortableDrops[x].classList[sortableDrops[x].classList.length - 1] == sortArray[j]) {
+                            sortableDrops[x].style.order = j
+                            x = sortableDrops.length + 2
+                        } else {
+                            x += 1
                         }
-        
-                        let gameNameDiv = document.querySelector("div.tw-align-items-center.tw-flex-wrap.tw-inline-flex.tw-mg-r-1 > a") //Pelin nimi div
-        
-                        if (gameNameDiv != null) { //Katotaa löytyykö divi
-                            if (gameNameDiv.innerText.length > 0) { //Jos löytyy katotaan onko siinä tekstiä
-                                currentGame = gameNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
-                            
-                                if (oldGame == undefined) { //Jos ei oo vielä oldStream
-                                    oldGame = currentGame //Lisätää nykyne striimi oldStreamii
-                                }
-                                if (currentGame == oldGame) { //Jos nykyne striimi sama kun vanha
-                                } else {
-                                    oldGame = currentGame //Jos on uus striimi, nii lisätään sen nimi oldStreamii
-                                    ifrm.style.visibility = "hidden" //Piilotetaa iframe
-                                }
-                            }
-                        }
-                        gameCheckTime += 1
-                        console.log(gameCheckTime)
-                        if(gameCheckTime > 20){
-                            clearInterval(nameCheck);
-                        }
-
-                        console.log(oldGame + oldStream)
-                        if(oldGame !== undefined && oldStream !== undefined){
-                            clearInterval(nameCheck);
-                        } 
-                    }, 500);
-
-            //Chekataa vaihtuuko striimin url
-            chrome.runtime.onMessage.addListener(
-                function(request, sender, sendResponse) {
-                  // listen for messages sent from background.js
-                  if (request.message === 'newURL') {        
-                    console.log(request.url) // new url
-                    gameCheckTime = 0
-                    urlCheck = setInterval(function () {
-                        let streamNameDiv = document.querySelector("div.tw-align-items-center.tw-flex > a") //Striimin nimi div
-        
-                        if (streamNameDiv != null) { //Katotaa löytyykö divi
-                            if (streamNameDiv.innerText.length > 0) { //Jos löytyy katotaan onko siinä tekstiä
-                                currentStream = streamNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
-
-                                if (oldStream == undefined) { //Jos ei oo vielä oldStream
-                                    oldStream = currentStream //Lisätää nykyne striimi oldStreamii
-
-                                }
-                                if (currentStream == oldStream) { //Jos nykyne striimi sama kun vanha
-                                } else {
-                                    oldStream = currentStream //Jos on uus striimi, nii lisätään sen nimi oldStreamii
-                                    clearInterval(urlCheck);
-
-
-                                    ifrm.style.visibility = "hidden" //Piilotetaa iframe
-                                    if (hideChannelsList.toLowerCase().split(", ").indexOf(oldStream.toLowerCase()) == -1) {
-                                        // hideIframeButton.style.visibility = 'visible'
-                                        // dropsPageButton.style.visibility = 'visible'
-                                        // settingsButton.style.visibility = 'visible'   // EI TOIMI NÄÄ
-
-                                        insertIframe() //Lisätää iframe uudestaa
-                                    } 
-                                    
-                                    else {
-                                        ifrm.height = "0px"
-                                        // hideIframeButton.style.visibility = 'hidden';
-                                        // dropsPageButton.style.visibility = 'hidden';
-                                        // settingsButton.style.visibility = 'hidden';
-                                        clearTimeout(reloadTime)
-                                    }
-                                }
-                            }
-                        }
-        
-                        let gameNameDiv = document.querySelector("div.tw-align-items-center.tw-flex-wrap.tw-inline-flex.tw-mg-r-1 > a") //Pelin nimi div
-        
-                        if (gameNameDiv != null) { //Katotaa löytyykö divi
-                            if (gameNameDiv.innerText.length > 0) { //Jos löytyy katotaan onko siinä tekstiä
-                                currentGame = gameNameDiv.innerText //Laitetaan löydetty nimi currentStreamiin
-                            
-                                if (oldGame == undefined) { //Jos ei oo vielä oldStream
-                                    oldGame = currentGame //Lisätää nykyne striimi oldStreamii
-                                }
-                                if (currentGame == oldGame) { //Jos nykyne striimi sama kun vanha
-                                } else {
-                                    oldGame = currentGame //Jos on uus striimi, nii lisätään sen nimi oldStreamii
-                                    ifrm.style.visibility = "hidden" //Piilotetaa iframe
-                                }
-                            }
-                        }
-
-                        gameCheckTime += 1
-                        console.log(gameCheckTime)
-
-                        if(gameCheckTime > 20){
-                            clearInterval(urlCheck);
-                        }
-
-                    }, 500);
-
-                  }
-              });
-
-        } else {
-            console.log('%c !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ', 'background: #ff0000; color: #fff')
-            console.log('%c Twitch Drops Manager is disabled in the settings ', 'background: #a970ff; color: #fff')
-            console.log('%c !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ', 'background: #ff0000; color: #fff')
-
-            let aboutTime = 0
-
-            checkAbout = setInterval(function () {
-                if (aboutTime < 20) {
-
-                    if (document.getElementsByClassName("tw-align-middle tw-font-size-7 tw-inline-block tw-mg-b-05 tw-mg-r-0")[0]){
-
-                        settingsButtonFunc()
-                        settingsButton.style.marginLeft = "10px"
-                        settingsButton.style.margintop = "-15px"
-                        document.getElementsByClassName("tw-align-middle tw-font-size-7 tw-inline-block tw-mg-b-05 tw-mg-r-0")[0].append(settingsButton)
-                        clearInterval(checkAbout)
-
                     }
-
-                } else {
-                    clearInterval(checkAbout)
                 }
-                console.log(aboutTime)
-                aboutTime += 1
-
-        }, 500)
-
+            }
         }
-    }
 
+        chrome.runtime.onMessage.addListener(
+            function (request, sender, sendResponse) {
+                if (request.message === 'newURL') {
+                    console.log("NEW URL")
+                    clearInterval(reloadInterval)
+
+                    console.log("DIVS: " + document.getElementsByClassName("TDMDiv").length)
+
+                    if(document.getElementsByClassName("TDMDiv").length > 0){
+                        for(i=0;i < document.getElementsByClassName("TDMDiv").length; i++){
+                            document.getElementsByClassName("TDMDiv")[i].remove()
+                            console.log("REMOVING: " + document.getElementsByClassName("TDMDiv").length)
+                        }
+                    }
+                    // if(document.getElementsByClassName("TDMIframe").length > 0){
+                    //     for(i=0;i < document.getElementsByClassName("TDMIframe").length; i++){
+                    //         document.getElementsByClassName("TDMIframe")[i].remove()
+                    //     }
+                    // }
+                    start()
+                }
+            }
+        )
+    }
 })();

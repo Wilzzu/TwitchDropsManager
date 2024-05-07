@@ -1,8 +1,13 @@
 {
     "name": "Twitch Drops Manager",
-    "version": "1.0.0",
+    "version": "1.0.5",
     "manifest_version": 2,
-    "description": "brrrr",
+    "icons": {
+        "16": "media/icon3.png",
+        "48": "media/icon2.png",
+        "128": "media/icon.png"
+    },
+    "description": "See your drop progress in real time, right under the stream!",
     "content_scripts": [{
         "matches": ["https://www.twitch.tv/*"],
         "js": ["drop.js"]
