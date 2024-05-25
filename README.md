@@ -1,4 +1,4 @@
-![Banner](https://i.imgur.com/QPW8P9V.png)
+![Banner](https://i.imgur.com/YZsfhIl.png)
 
 <h1 align="center">Twitch Drops Manager</h1>
 
