@@ -1,6 +1,11 @@
+![Banner](https://i.imgur.com/QPW8P9V.png)
+
 <h1 align="center">Twitch Drops Manager</h1>
 
 <p align="center">Easily access all your available Twitch drops and see their current status straight under the stream.</p>
+
+> [!WARNING]
+> This extension is now deprecated after changes to the Twitch website structure.
 
 ## Features
 
