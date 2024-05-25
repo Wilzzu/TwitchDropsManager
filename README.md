@@ -1,10 +1,10 @@
-# Twitch Drops Manager
+<h1 align="center">Twitch Drops Manager</h1>
 
-Easily access all your available Twitch drops and see their current status straight under the stream window.
+<p align="center">Easily access all your available Twitch drops and see their current status straight under the stream.</p>
 
 ## Features
 
-- See all your available Twitch drops in a list under the stream window
+- See all your available Twitch drops in a list under the stream
 - Automatically refresh drops status
 - Automatically claim drops
 - Show time left in minutes or percentage
@@ -28,7 +28,7 @@ Easily access all your available Twitch drops and see their current status strai
 ## Usage
 
 1. Open Twitch and navigate to any stream.
-2. The extension will automatically display your available Twitch drops and their status under the stream window.
+2. The extension will automatically display your available Twitch drops and their status under the stream.
 3. You can change different settings by right clicking the extension icon in the top right corner of the browser and selecting `Options`.
 
 ## License
