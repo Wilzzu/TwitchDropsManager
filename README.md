@@ -15,6 +15,8 @@
 - Show time left in minutes or percentage
 - Show the origin of the drop
 
+![Screenshots](https://i.imgur.com/N31wgy6.png)
+
 ## Installation
 
 1. **Clone the repository:**
